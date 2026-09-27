@@ -46,6 +46,9 @@ export interface Vehicle {
   terrain?: Terrain;
   lastOilChangeDate?: string;
   lastOilChangeKm?: number;
+  source?: string;
+  verified?: boolean;
+  verifiedAt?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -60,6 +63,11 @@ export interface OperationSession {
   overtimeMinutes?: number;
   status: OperationStatus;
   notes?: string;
+  loadCondition?: LoadCondition;
+  terrain?: Terrain;
+  isPaused?: boolean;
+  pausedAt?: string;
+  pauseDurationMs?: number;
   createdAt: string;
 }
 

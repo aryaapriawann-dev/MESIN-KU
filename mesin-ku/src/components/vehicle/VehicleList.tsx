@@ -28,6 +28,7 @@ interface Props {
 export default function VehicleList({ vehicles, onDelete, onEdit }: Props) {
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState<string>("all");
+  const [selectedDetail, setSelectedDetail] = useState<Vehicle | null>(null);
 
   const filtered = useMemo(() => {
     return vehicles.filter((v) => {
@@ -184,10 +185,18 @@ export default function VehicleList({ vehicles, onDelete, onEdit }: Props) {
               </div>
 
               {/* Action Toolbar */}
-              <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between gap-2">
+              <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between gap-1.5">
+                <button
+                  onClick={() => setSelectedDetail(v)}
+                  title="Lihat Detail Spesifikasi"
+                  className="px-2 py-1.5 rounded-lg text-cyan-400 hover:text-cyan-300 bg-cyan-950/60 hover:bg-cyan-900/60 border border-cyan-800/60 text-[10px] font-mono font-bold transition-colors"
+                >
+                  SPECS
+                </button>
+
                 <Link
                   href={`/operation?vehicleId=${v.id}`}
-                  className="flex-1 inline-flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg text-xs font-semibold bg-cyan-950 hover:bg-cyan-900 text-cyan-300 border border-cyan-800/60 transition-colors"
+                  className="flex-1 inline-flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-lg text-xs font-semibold bg-cyan-950 hover:bg-cyan-900 text-cyan-300 border border-cyan-800/60 transition-colors"
                 >
                   <OperationIcon className="w-3.5 h-3.5" />
                   <span>Operasi</span>
@@ -231,6 +240,90 @@ export default function VehicleList({ vehicles, onDelete, onEdit }: Props) {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Technical Detail Specs Modal */}
+      {selectedDetail && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl max-w-xl w-full p-6 space-y-5 shadow-2xl">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+              <div>
+                <span className="text-[10px] font-mono text-cyan-400 uppercase tracking-wider block">
+                  DETAIL SPESIFIKASI TEKNIS
+                </span>
+                <h3 className="text-lg font-bold font-mono text-white">
+                  {selectedDetail.brand} {selectedDetail.model}
+                </h3>
+              </div>
+              <button
+                onClick={() => setSelectedDetail(null)}
+                className="text-xs font-mono px-3 py-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white"
+              >
+                TUTUP
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 text-xs font-mono">
+              <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
+                <span className="text-slate-500 block text-[10px]">JENIS KENDARAAN</span>
+                <span className="text-slate-200 font-semibold">{VEHICLE_TYPE_LABELS[selectedDetail.type]}</span>
+              </div>
+              <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
+                <span className="text-slate-500 block text-[10px]">NOMOR POLISI (PLAT)</span>
+                <span className="text-slate-200 font-semibold">{selectedDetail.plateNumber || "-"}</span>
+              </div>
+              <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
+                <span className="text-slate-500 block text-[10px]">NOMOR MESIN</span>
+                <span className="text-slate-200 font-semibold">{selectedDetail.engineNumber || "-"}</span>
+              </div>
+              <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
+                <span className="text-slate-500 block text-[10px]">NOMOR RANGKA (VIN)</span>
+                <span className="text-slate-200 font-semibold">{selectedDetail.chassisNumber || "-"}</span>
+              </div>
+              <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
+                <span className="text-slate-500 block text-[10px]">KAPASITAS MESIN / CC</span>
+                <span className="text-slate-200 font-semibold">{selectedDetail.engineCc ? `${selectedDetail.engineCc} cc` : "-"}</span>
+              </div>
+              <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
+                <span className="text-slate-500 block text-[10px]">JENIS BAHAN BAKAR</span>
+                <span className="text-slate-200 font-semibold">{FUEL_TYPE_LABELS[selectedDetail.fuelType]}</span>
+              </div>
+              <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
+                <span className="text-slate-500 block text-[10px]">ODOMETER SAAT INI</span>
+                <span className="text-cyan-400 font-semibold">{selectedDetail.currentKm !== undefined ? `${selectedDetail.currentKm.toLocaleString("id-ID")} KM` : "-"}</span>
+              </div>
+              <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
+                <span className="text-slate-500 block text-[10px]">KAPASITAS TANGKI BBM</span>
+                <span className="text-slate-200 font-semibold">{selectedDetail.fuelLiters ? `${selectedDetail.fuelLiters} Liter` : "-"}</span>
+              </div>
+              <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
+                <span className="text-slate-500 block text-[10px]">KONDISI / BEBAN</span>
+                <span className="text-slate-200 font-semibold">{selectedDetail.loadCondition ? LOAD_CONDITION_LABELS[selectedDetail.loadCondition] : "-"}</span>
+              </div>
+              <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
+                <span className="text-slate-500 block text-[10px]">KONDISI MEDAN</span>
+                <span className="text-slate-200 font-semibold">{selectedDetail.terrain ? TERRAIN_LABELS[selectedDetail.terrain] : "-"}</span>
+              </div>
+              <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
+                <span className="text-slate-500 block text-[10px]">TERAKHIR GANTI OLI</span>
+                <span className="text-slate-200 font-semibold">{selectedDetail.lastOilChangeDate || "-"}</span>
+              </div>
+              <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
+                <span className="text-slate-500 block text-[10px]">KM GANTI OLI</span>
+                <span className="text-slate-200 font-semibold">{selectedDetail.lastOilChangeKm ? `${selectedDetail.lastOilChangeKm.toLocaleString("id-ID")} KM` : "-"}</span>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2 pt-2 border-t border-slate-800">
+              <Link
+                href={`/reports?vehicleId=${selectedDetail.id}`}
+                className="px-4 py-2 rounded-lg text-xs font-mono font-semibold text-white bg-blue-600 hover:bg-blue-500"
+              >
+                Unduh PDF Unit Ini
+              </Link>
+            </div>
+          </div>
         </div>
       )}
     </div>

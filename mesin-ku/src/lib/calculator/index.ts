@@ -5,6 +5,21 @@ export function calculateOperationDurationMs(startTime: string, endTime: string)
   return Math.max(0, end - start);
 }
 
+/** Pure function as specified in spesifikasi.md */
+export function calculateOperationDuration(startTime: string, endTime: string): {
+  durationMs: number;
+  hours: number;
+  minutes: number;
+  human: string;
+} {
+  const durationMs = calculateOperationDurationMs(startTime, endTime);
+  const totalMinutes = Math.floor(durationMs / 60000);
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  const human = msToHumanReadable(durationMs);
+  return { durationMs, hours, minutes, human };
+}
+
 export function calculateRemainingMs(targetEndTime: string): number {
   const target = new Date(targetEndTime).getTime();
   const now = Date.now();
@@ -19,10 +34,40 @@ export function calculateOvertimeMs(targetEndTime: string): number {
   return Math.max(0, now - target);
 }
 
+/** Pure function as specified in spesifikasi.md */
+export function calculateOvertime(
+  currentTime: number | string = Date.now(),
+  targetEndTime: string
+): {
+  isOvertime: boolean;
+  overtimeMs: number;
+  overtimeMinutes: number;
+  timeString: string;
+} {
+  const now = typeof currentTime === "number" ? currentTime : new Date(currentTime).getTime();
+  const target = new Date(targetEndTime).getTime();
+  if (isNaN(target) || isNaN(now) || now <= target) {
+    return { isOvertime: false, overtimeMs: 0, overtimeMinutes: 0, timeString: "00:00:00" };
+  }
+  const overtimeMs = now - target;
+  const overtimeMinutes = Math.floor(overtimeMs / 60000);
+  return {
+    isOvertime: true,
+    overtimeMs,
+    overtimeMinutes,
+    timeString: msToTimeString(overtimeMs),
+  };
+}
+
 export function calculateRestEndTime(actualEndTime: string, restDurationMinutes: number): string {
   const end = new Date(actualEndTime).getTime();
   if (isNaN(end)) return actualEndTime;
   return new Date(end + restDurationMinutes * 60 * 1000).toISOString();
+}
+
+/** Pure function as specified in spesifikasi.md */
+export function calculateRestEnd(actualEndTime: string, restDurationMinutes: number): string {
+  return calculateRestEndTime(actualEndTime, restDurationMinutes);
 }
 
 export function calculateRestRemainingMs(restEndTime: string): number {
