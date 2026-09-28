@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { CheckCircle2, Save, X } from "lucide-react";
 import {
   Vehicle,
   VehicleType,
@@ -15,7 +16,6 @@ import {
 } from "@/types";
 import { validateVehicle, ValidationError } from "@/lib/validation";
 import { vehicleStore } from "@/data/store";
-import { CheckCircleIcon } from "@/components/ui/Icons";
 
 interface Props {
   vehicle?: Vehicle;
@@ -83,37 +83,37 @@ export default function VehicleForm({ vehicle, onSave, onCancel }: Props) {
   }
 
   const inputClass = (field: string) =>
-    `w-full px-3.5 py-2.5 bg-slate-950/80 border rounded-lg text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-cyan-500 transition-colors ${
+    `w-full px-4 py-2.5 bg-[#070b12]/80 border rounded-xl text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-cyan-500/40 transition-colors ${
       getError(field)
-        ? "border-rose-500 focus:border-rose-500"
-        : "border-slate-800 focus:border-cyan-500 hover:border-slate-700"
+        ? "border-rose-500/80 focus:border-rose-500"
+        : "border-white/[0.08] focus:border-cyan-500 hover:border-white/[0.15]"
     }`;
 
   const selectClass = (field: string) =>
-    `w-full px-3.5 py-2.5 bg-slate-950 border rounded-lg text-sm text-slate-100 focus:outline-none focus:ring-1 focus:ring-cyan-500 transition-colors ${
+    `w-full px-4 py-2.5 bg-[#070b12]/80 border rounded-xl text-sm text-slate-100 focus:outline-none focus:ring-1 focus:ring-cyan-500/40 transition-colors ${
       getError(field)
-        ? "border-rose-500 focus:border-rose-500"
-        : "border-slate-800 focus:border-cyan-500 hover:border-slate-700"
+        ? "border-rose-500/80 focus:border-rose-500"
+        : "border-white/[0.08] focus:border-cyan-500 hover:border-white/[0.15]"
     }`;
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {saved && (
-        <div className="bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 px-4 py-3 rounded-lg text-sm flex items-center gap-2">
-          <CheckCircleIcon className="w-5 h-5 text-emerald-400" />
+        <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 px-4 py-3 rounded-xl text-sm flex items-center gap-2">
+          <CheckCircle2 className="w-5 h-5 text-emerald-400" />
           <span>Data armada berhasil disimpan ke sistem!</span>
         </div>
       )}
 
       {/* Section 1: Identitas Pokok */}
       <div>
-        <h3 className="text-xs font-mono font-semibold tracking-wider text-cyan-400 uppercase mb-3">
+        <h3 className="text-xs font-semibold tracking-wider text-cyan-400 uppercase mb-3">
           1. Identitas & Legalitas Kendaraan
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-xs font-mono font-medium text-slate-300 mb-1.5">
-              MEREK / BRAND *
+            <label className="block text-xs font-medium text-slate-300 mb-1.5">
+              Merek / Brand <span className="text-rose-400">*</span>
             </label>
             <input
               type="text"
@@ -123,13 +123,13 @@ export default function VehicleForm({ vehicle, onSave, onCancel }: Props) {
               placeholder="Contoh: Toyota, Mitsubishi, Isuzu"
             />
             {getError("brand") && (
-              <p className="text-rose-400 text-xs mt-1 font-mono">{getError("brand")}</p>
+              <p className="text-rose-400 text-xs mt-1">{getError("brand")}</p>
             )}
           </div>
 
           <div>
-            <label className="block text-xs font-mono font-medium text-slate-300 mb-1.5">
-              MODEL / VARIAN *
+            <label className="block text-xs font-medium text-slate-300 mb-1.5">
+              Model / Tipe Varian <span className="text-rose-400">*</span>
             </label>
             <input
               type="text"
@@ -139,13 +139,13 @@ export default function VehicleForm({ vehicle, onSave, onCancel }: Props) {
               placeholder="Contoh: Hilux 2.4 D-Cab, Canter 71"
             />
             {getError("model") && (
-              <p className="text-rose-400 text-xs mt-1 font-mono">{getError("model")}</p>
+              <p className="text-rose-400 text-xs mt-1">{getError("model")}</p>
             )}
           </div>
 
           <div>
-            <label className="block text-xs font-mono font-medium text-slate-300 mb-1.5">
-              NOMOR POLISI (PLAT)
+            <label className="block text-xs font-medium text-slate-300 mb-1.5">
+              Nomor Polisi (Plat)
             </label>
             <input
               type="text"
@@ -157,8 +157,8 @@ export default function VehicleForm({ vehicle, onSave, onCancel }: Props) {
           </div>
 
           <div>
-            <label className="block text-xs font-mono font-medium text-slate-300 mb-1.5">
-              JENIS KENDARAAN *
+            <label className="block text-xs font-medium text-slate-300 mb-1.5">
+              Jenis Kendaraan <span className="text-rose-400">*</span>
             </label>
             <select
               value={form.type || ""}
@@ -172,13 +172,13 @@ export default function VehicleForm({ vehicle, onSave, onCancel }: Props) {
               ))}
             </select>
             {getError("type") && (
-              <p className="text-rose-400 text-xs mt-1 font-mono">{getError("type")}</p>
+              <p className="text-rose-400 text-xs mt-1">{getError("type")}</p>
             )}
           </div>
 
           <div>
-            <label className="block text-xs font-mono font-medium text-slate-300 mb-1.5">
-              NOMOR MESIN
+            <label className="block text-xs font-medium text-slate-300 mb-1.5">
+              Nomor Mesin
             </label>
             <input
               type="text"
@@ -190,8 +190,8 @@ export default function VehicleForm({ vehicle, onSave, onCancel }: Props) {
           </div>
 
           <div>
-            <label className="block text-xs font-mono font-medium text-slate-300 mb-1.5">
-              NOMOR RANGKA (VIN)
+            <label className="block text-xs font-medium text-slate-300 mb-1.5">
+              Nomor Rangka (VIN)
             </label>
             <input
               type="text"
@@ -205,14 +205,14 @@ export default function VehicleForm({ vehicle, onSave, onCancel }: Props) {
       </div>
 
       {/* Section 2: Spesifikasi Mesin & Bahan Bakar */}
-      <div className="pt-3 border-t border-slate-800">
-        <h3 className="text-xs font-mono font-semibold tracking-wider text-cyan-400 uppercase mb-3">
+      <div className="pt-4 border-t border-white/[0.07]">
+        <h3 className="text-xs font-semibold tracking-wider text-cyan-400 uppercase mb-3">
           2. Spesifikasi Teknis & Bahan Bakar
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-xs font-mono font-medium text-slate-300 mb-1.5">
-              JENIS BAHAN BAKAR *
+            <label className="block text-xs font-medium text-slate-300 mb-1.5">
+              Jenis Bahan Bakar <span className="text-rose-400">*</span>
             </label>
             <select
               value={form.fuelType || ""}
@@ -228,8 +228,8 @@ export default function VehicleForm({ vehicle, onSave, onCancel }: Props) {
           </div>
 
           <div>
-            <label className="block text-xs font-mono font-medium text-slate-300 mb-1.5">
-              KAPASITAS MESIN (CC)
+            <label className="block text-xs font-medium text-slate-300 mb-1.5">
+              Kapasitas Mesin (CC)
             </label>
             <input
               type="number"
@@ -242,13 +242,13 @@ export default function VehicleForm({ vehicle, onSave, onCancel }: Props) {
               min="0"
             />
             {getError("engineCc") && (
-              <p className="text-rose-400 text-xs mt-1 font-mono">{getError("engineCc")}</p>
+              <p className="text-rose-400 text-xs mt-1">{getError("engineCc")}</p>
             )}
           </div>
 
           <div>
-            <label className="block text-xs font-mono font-medium text-slate-300 mb-1.5">
-              KAPASITAS TANGKI BBM (LITER)
+            <label className="block text-xs font-medium text-slate-300 mb-1.5">
+              Kapasitas Tangki BBM (Liter)
             </label>
             <input
               type="number"
@@ -262,13 +262,13 @@ export default function VehicleForm({ vehicle, onSave, onCancel }: Props) {
               step="0.5"
             />
             {getError("fuelLiters") && (
-              <p className="text-rose-400 text-xs mt-1 font-mono">{getError("fuelLiters")}</p>
+              <p className="text-rose-400 text-xs mt-1">{getError("fuelLiters")}</p>
             )}
           </div>
 
           <div>
-            <label className="block text-xs font-mono font-medium text-slate-300 mb-1.5">
-              KONDISI BEBAN KERJA
+            <label className="block text-xs font-medium text-slate-300 mb-1.5">
+              Kondisi Beban Kerja
             </label>
             <select
               value={form.loadCondition || "normal"}
@@ -284,8 +284,8 @@ export default function VehicleForm({ vehicle, onSave, onCancel }: Props) {
           </div>
 
           <div>
-            <label className="block text-xs font-mono font-medium text-slate-300 mb-1.5">
-              MEDAN OPERASI UTAMA
+            <label className="block text-xs font-medium text-slate-300 mb-1.5">
+              Medan Operasi Utama
             </label>
             <select
               value={form.terrain || "urban"}
@@ -301,8 +301,8 @@ export default function VehicleForm({ vehicle, onSave, onCancel }: Props) {
           </div>
 
           <div>
-            <label className="block text-xs font-mono font-medium text-slate-300 mb-1.5">
-              ODOMETER SAAT INI (KM)
+            <label className="block text-xs font-medium text-slate-300 mb-1.5">
+              Odometer Saat Ini (KM)
             </label>
             <input
               type="number"
@@ -315,21 +315,21 @@ export default function VehicleForm({ vehicle, onSave, onCancel }: Props) {
               min="0"
             />
             {getError("currentKm") && (
-              <p className="text-rose-400 text-xs mt-1 font-mono">{getError("currentKm")}</p>
+              <p className="text-rose-400 text-xs mt-1">{getError("currentKm")}</p>
             )}
           </div>
         </div>
       </div>
 
       {/* Section 3: Baseline Riwayat Servis Oli */}
-      <div className="pt-3 border-t border-slate-800">
-        <h3 className="text-xs font-mono font-semibold tracking-wider text-cyan-400 uppercase mb-3">
+      <div className="pt-4 border-t border-white/[0.07]">
+        <h3 className="text-xs font-semibold tracking-wider text-cyan-400 uppercase mb-3">
           3. Baseline Perawatan Terakhir
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-mono font-medium text-slate-300 mb-1.5">
-              TANGGAL TERAKHIR GANTI OLI
+            <label className="block text-xs font-medium text-slate-300 mb-1.5">
+              Tanggal Terakhir Ganti Oli
             </label>
             <input
               type="date"
@@ -340,8 +340,8 @@ export default function VehicleForm({ vehicle, onSave, onCancel }: Props) {
           </div>
 
           <div>
-            <label className="block text-xs font-mono font-medium text-slate-300 mb-1.5">
-              KM SAAT TERAKHIR GANTI OLI
+            <label className="block text-xs font-medium text-slate-300 mb-1.5">
+              KM Saat Terakhir Ganti Oli
             </label>
             <input
               type="number"
@@ -357,7 +357,7 @@ export default function VehicleForm({ vehicle, onSave, onCancel }: Props) {
               min="0"
             />
             {getError("lastOilChangeKm") && (
-              <p className="text-rose-400 text-xs mt-1 font-mono">
+              <p className="text-rose-400 text-xs mt-1">
                 {getError("lastOilChangeKm")}
               </p>
             )}
@@ -366,23 +366,25 @@ export default function VehicleForm({ vehicle, onSave, onCancel }: Props) {
       </div>
 
       {/* Actions */}
-      <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+      <div className="flex items-center justify-end gap-3 pt-5 border-t border-white/[0.07]">
         {onCancel && (
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-white bg-slate-800/80 hover:bg-slate-700 transition-colors"
+            className="px-4 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white bg-slate-800/80 hover:bg-slate-700/80 transition-colors"
           >
             Batal
           </button>
         )}
         <button
           type="submit"
-          className="px-6 py-2 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-500 transition-all shadow-md shadow-blue-900/30 font-mono tracking-wide"
+          className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-semibold text-white bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 transition-all shadow-md shadow-cyan-950/40"
         >
-          {vehicle ? "SIMPAN PERUBAHAN" : "TAMBAHKAN KE ARMADA"}
+          <Save className="w-4 h-4" />
+          <span>{vehicle ? "Simpan Perubahan" : "Tambahkan ke Armada"}</span>
         </button>
       </div>
     </form>
   );
 }
+

@@ -1,14 +1,16 @@
 @import "tailwindcss";
 
 :root {
-  --background: #090d16;
-  --foreground: #f1f5f9;
-  --card-bg: #0f172a;
-  --card-border: #1e293b;
+  --background: #080c14;
+  --foreground: #f8fafc;
+  --card-bg: rgba(13, 19, 33, 0.75);
+  --card-border: rgba(255, 255, 255, 0.08);
+  --card-border-hover: rgba(255, 255, 255, 0.16);
   --accent-cyan: #06b6d4;
   --accent-emerald: #10b981;
   --accent-amber: #f59e0b;
   --accent-rose: #f43f5e;
+  --accent-indigo: #6366f1;
 }
 
 @theme inline {
@@ -33,6 +35,11 @@ body {
   font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   min-height: 100vh;
+  background-image: 
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(14, 165, 233, 0.08), transparent 70%),
+    radial-gradient(circle at 100% 20%, rgba(99, 102, 241, 0.05), transparent 50%),
+    radial-gradient(circle at 0% 50%, rgba(16, 185, 129, 0.04), transparent 45%);
+  background-attachment: fixed;
 }
 
 /* Telemetry number readability */
@@ -40,78 +47,108 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-/* Indonesian License Plate Style */
+/* Glassmorphism & High-End Card Surfaces */
+.glass-panel {
+  background: rgba(13, 19, 33, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.36), inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+}
+
+.glass-card {
+  background: linear-gradient(135deg, rgba(17, 24, 39, 0.8) 0%, rgba(15, 23, 42, 0.6) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.3), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card:hover {
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 8px 30px -4px rgba(0, 0, 0, 0.45), inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Indonesian License Plate Style - Realistic Metal Stamping */
 .plate-embossed {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.25rem 0.65rem;
-  background: #000000;
-  color: #ffffff;
+  gap: 0.35rem;
+  padding: 0.2rem 0.65rem;
+  background: linear-gradient(180deg, #181c24 0%, #0d1017 100%);
+  color: #f8fafc;
   font-family: var(--font-geist-mono), monospace;
   font-weight: 700;
-  letter-spacing: 0.12em;
-  font-size: 0.78rem;
-  border-radius: 0.375rem;
-  border: 1.5px solid #334155;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 2px 4px rgba(0, 0, 0, 0.4);
+  letter-spacing: 0.14em;
+  font-size: 0.76rem;
+  border-radius: 0.35rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.8), 0 2px 4px rgba(0, 0, 0, 0.5);
   text-transform: uppercase;
+  position: relative;
 }
 
-/* Pulse animation for active telematics */
-@keyframes radar-pulse {
-  0% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
-  }
-  70% {
+.plate-embossed::before,
+.plate-embossed::after {
+  content: "";
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #64748b;
+  box-shadow: inset 0 0.5px 0.5px rgba(255, 255, 255, 0.5), 0 0.5px 1px rgba(0, 0, 0, 0.8);
+}
+
+.plate-embossed::before {
+  left: 3px;
+}
+
+.plate-embossed::after {
+  right: 3px;
+}
+
+/* Subtle, Elegant Status Glow Pulse */
+@keyframes soft-pulse {
+  0%, 100% {
+    opacity: 1;
     transform: scale(1);
-    box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
   }
-  100% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
-  }
-}
-
-.animate-radar {
-  animation: radar-pulse 2s infinite ease-in-out;
-}
-
-@keyframes warning-pulse {
-  0% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.7);
-  }
-  70% {
-    transform: scale(1);
-    box-shadow: 0 0 0 8px rgba(244, 63, 94, 0);
-  }
-  100% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(244, 63, 94, 0);
+  50% {
+    opacity: 0.5;
+    transform: scale(0.92);
   }
 }
 
-.animate-warning-radar {
-  animation: warning-pulse 1.8s infinite ease-in-out;
+.animate-soft-pulse {
+  animation: soft-pulse 2s infinite ease-in-out;
 }
 
-/* Custom Cockpit Scrollbar */
+/* Cockpit Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #090d16;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
-  border-radius: 3px;
+  background: rgba(148, 163, 184, 0.15);
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: rgba(148, 163, 184, 0.3);
 }
+
+/* Custom Cockpit Grid Lines background */
+.cockpit-grid {
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+}
+

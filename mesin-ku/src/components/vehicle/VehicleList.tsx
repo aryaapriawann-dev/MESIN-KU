@@ -3,21 +3,26 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import {
+  Truck,
+  Timer,
+  Wrench,
+  Fuel,
+  Pencil,
+  Trash2,
+  SlidersHorizontal,
+  Search,
+  FileText,
+  X,
+  Gauge,
+  Info,
+} from "lucide-react";
+import {
   Vehicle,
   VEHICLE_TYPE_LABELS,
   FUEL_TYPE_LABELS,
   LOAD_CONDITION_LABELS,
   TERRAIN_LABELS,
 } from "@/types";
-import {
-  VehicleIcon,
-  OperationIcon,
-  MaintenanceIcon,
-  FuelIcon,
-  EditIcon,
-  TrashIcon,
-  FilterIcon,
-} from "@/components/ui/Icons";
 
 interface Props {
   vehicles: Vehicle[];
@@ -44,8 +49,8 @@ export default function VehicleList({ vehicles, onDelete, onEdit }: Props) {
 
   if (vehicles.length === 0) {
     return (
-      <div className="text-center py-16 bg-slate-900/40 border border-slate-800 rounded-xl">
-        <VehicleIcon className="w-12 h-12 text-slate-600 mx-auto mb-3" />
+      <div className="text-center py-16 glass-panel rounded-3xl space-y-3">
+        <Truck className="w-12 h-12 text-slate-600 mx-auto" />
         <h3 className="text-base font-semibold text-slate-200">Belum Ada Kendaraan</h3>
         <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
           Tambahkan data kendaraan pertama Anda untuk memulai manajemen armada dan pencatatan operasional.
@@ -57,36 +62,28 @@ export default function VehicleList({ vehicles, onDelete, onEdit }: Props) {
   const vehicleTypes = Array.from(new Set(vehicles.map((v) => v.type)));
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       {/* Search and Filter toolbar */}
-      <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-3 flex flex-col sm:flex-row gap-3 items-center justify-between">
+      <div className="glass-panel rounded-2xl p-3 md:p-4 flex flex-col sm:flex-row gap-3 items-center justify-between">
         <div className="relative w-full sm:w-80">
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
           <input
             type="text"
             placeholder="Cari plat nomor, merek, atau model..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-3.5 py-2 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500"
+            className="w-full pl-10 pr-3.5 py-2.5 bg-[#070b12]/80 border border-white/[0.08] hover:border-white/[0.15] focus:border-cyan-500 rounded-xl text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-cyan-500/40 transition-colors"
           />
-          <svg
-            className="w-4 h-4 text-slate-500 absolute left-3 top-2.5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <circle cx="11" cy="11" r="8" />
-            <path d="m21 21-4.35-4.35" />
-          </svg>
         </div>
 
         <div className="flex items-center gap-2 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
-          <FilterIcon className="w-3.5 h-3.5 text-slate-500 shrink-0 hidden sm:block" />
+          <SlidersHorizontal className="w-4 h-4 text-slate-400 shrink-0 hidden sm:block mr-1" />
           <button
             onClick={() => setTypeFilter("all")}
-            className={`px-2.5 py-1.5 rounded-lg text-xs font-mono font-medium transition-colors shrink-0 ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all shrink-0 ${
               typeFilter === "all"
-                ? "bg-cyan-950 text-cyan-300 border border-cyan-700/60"
-                : "text-slate-400 hover:text-slate-200 bg-slate-950/60 border border-slate-800"
+                ? "bg-cyan-500/15 text-cyan-300 border border-cyan-500/30"
+                : "text-slate-400 hover:text-slate-200 bg-[#070b12]/60 hover:bg-white/[0.04] border border-white/[0.06]"
             }`}
           >
             Semua ({vehicles.length})
@@ -95,10 +92,10 @@ export default function VehicleList({ vehicles, onDelete, onEdit }: Props) {
             <button
               key={type}
               onClick={() => setTypeFilter(type)}
-              className={`px-2.5 py-1.5 rounded-lg text-xs font-mono font-medium transition-colors shrink-0 ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all shrink-0 ${
                 typeFilter === type
-                  ? "bg-cyan-950 text-cyan-300 border border-cyan-700/60"
-                  : "text-slate-400 hover:text-slate-200 bg-slate-950/60 border border-slate-800"
+                  ? "bg-cyan-500/15 text-cyan-300 border border-cyan-500/30"
+                  : "text-slate-400 hover:text-slate-200 bg-[#070b12]/60 hover:bg-white/[0.04] border border-white/[0.06]"
               }`}
             >
               {VEHICLE_TYPE_LABELS[type]}
@@ -109,7 +106,7 @@ export default function VehicleList({ vehicles, onDelete, onEdit }: Props) {
 
       {/* Grid of Vehicles */}
       {filtered.length === 0 ? (
-        <div className="text-center py-10 bg-slate-900/30 border border-slate-800 rounded-xl text-slate-400 text-xs">
+        <div className="text-center py-12 glass-panel rounded-2xl text-slate-400 text-xs">
           Tidak ditemukan kendaraan yang cocok dengan filter pencarian.
         </div>
       ) : (
@@ -117,52 +114,52 @@ export default function VehicleList({ vehicles, onDelete, onEdit }: Props) {
           {filtered.map((v) => (
             <div
               key={v.id}
-              className="bg-slate-900/90 border border-slate-800/90 hover:border-slate-700 rounded-xl p-4 transition-all flex flex-col justify-between group shadow-sm hover:shadow-md"
+              className="glass-card rounded-2xl p-5 flex flex-col justify-between group shadow-lg"
             >
               <div>
                 {/* Header: Plate & Type */}
                 <div className="flex items-start justify-between gap-2 mb-3">
                   <div>
-                    <h3 className="font-semibold text-white text-base tracking-tight">
+                    <h3 className="font-semibold text-white text-base tracking-tight group-hover:text-cyan-300 transition-colors">
                       {v.brand} {v.model}
                     </h3>
-                    <span className="text-xs text-slate-400 font-mono">
+                    <span className="text-xs text-slate-400">
                       {VEHICLE_TYPE_LABELS[v.type]}
                     </span>
                   </div>
                   {v.plateNumber ? (
-                    <span className="plate-embossed">{v.plateNumber}</span>
+                    <span className="plate-embossed text-xs">{v.plateNumber}</span>
                   ) : (
-                    <span className="text-[10px] font-mono text-slate-500 bg-slate-800 px-2 py-0.5 rounded">
-                      TANPA PLAT
+                    <span className="text-[10px] text-slate-400 bg-slate-800 px-2 py-0.5 rounded-md">
+                      Tanpa Plat
                     </span>
                   )}
                 </div>
 
                 {/* Technical specs badges */}
-                <div className="grid grid-cols-2 gap-2 text-xs bg-slate-950/70 p-3 rounded-lg border border-slate-800/70 font-mono mb-4">
+                <div className="grid grid-cols-2 gap-2 text-xs bg-[#070b12]/60 p-3 rounded-xl border border-white/[0.05] mb-4">
                   <div>
-                    <span className="text-[10px] text-slate-500 block">KILOMETER</span>
-                    <span className="text-slate-200 font-medium tabular-nums">
+                    <span className="text-[10px] text-slate-400 block font-medium">KILOMETER</span>
+                    <span className="text-slate-200 font-mono font-semibold tabular-nums">
                       {v.currentKm !== undefined
                         ? `${v.currentKm.toLocaleString("id-ID")} KM`
                         : "-"}
                     </span>
                   </div>
                   <div>
-                    <span className="text-[10px] text-slate-500 block">BAHAN BAKAR</span>
+                    <span className="text-[10px] text-slate-400 block font-medium">BAHAN BAKAR</span>
                     <span className="text-slate-200 font-medium">
                       {FUEL_TYPE_LABELS[v.fuelType]}
                     </span>
                   </div>
                   <div>
-                    <span className="text-[10px] text-slate-500 block">CC MESIN</span>
+                    <span className="text-[10px] text-slate-400 block font-medium">CC MESIN</span>
                     <span className="text-slate-300">
                       {v.engineCc ? `${v.engineCc} cc` : "-"}
                     </span>
                   </div>
                   <div>
-                    <span className="text-[10px] text-slate-500 block">TANGKI BBM</span>
+                    <span className="text-[10px] text-slate-400 block font-medium">TANGKI BBM</span>
                     <span className="text-slate-300">
                       {v.fuelLiters ? `${v.fuelLiters} L` : "-"}
                     </span>
@@ -170,14 +167,14 @@ export default function VehicleList({ vehicles, onDelete, onEdit }: Props) {
                 </div>
 
                 {/* Operational tags */}
-                <div className="flex flex-wrap gap-1.5 mb-4 text-[11px] font-mono">
+                <div className="flex flex-wrap gap-1.5 mb-4 text-xs">
                   {v.loadCondition && (
-                    <span className="px-2 py-0.5 rounded bg-slate-800/80 text-slate-300 border border-slate-700/60">
+                    <span className="px-2.5 py-0.5 rounded-lg bg-slate-800/80 text-slate-300 border border-white/[0.06]">
                       Beban: {LOAD_CONDITION_LABELS[v.loadCondition]}
                     </span>
                   )}
                   {v.terrain && (
-                    <span className="px-2 py-0.5 rounded bg-slate-800/80 text-slate-300 border border-slate-700/60">
+                    <span className="px-2.5 py-0.5 rounded-lg bg-slate-800/80 text-slate-300 border border-white/[0.06]">
                       Medan: {TERRAIN_LABELS[v.terrain]}
                     </span>
                   )}
@@ -185,45 +182,45 @@ export default function VehicleList({ vehicles, onDelete, onEdit }: Props) {
               </div>
 
               {/* Action Toolbar */}
-              <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between gap-1.5">
+              <div className="pt-3 border-t border-white/[0.06] flex items-center justify-between gap-1.5">
                 <button
                   onClick={() => setSelectedDetail(v)}
                   title="Lihat Detail Spesifikasi"
-                  className="px-2 py-1.5 rounded-lg text-cyan-400 hover:text-cyan-300 bg-cyan-950/60 hover:bg-cyan-900/60 border border-cyan-800/60 text-[10px] font-mono font-bold transition-colors"
+                  className="px-2.5 py-2 rounded-xl text-cyan-400 hover:text-cyan-300 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/20 text-xs font-medium transition-colors"
                 >
-                  SPECS
+                  Specs
                 </button>
 
                 <Link
                   href={`/operation?vehicleId=${v.id}`}
-                  className="flex-1 inline-flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-lg text-xs font-semibold bg-cyan-950 hover:bg-cyan-900 text-cyan-300 border border-cyan-800/60 transition-colors"
+                  className="flex-1 inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-semibold bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white transition-all shadow-md shadow-cyan-950/40"
                 >
-                  <OperationIcon className="w-3.5 h-3.5" />
-                  <span>Operasi</span>
+                  <Timer className="w-3.5 h-3.5" />
+                  <span>Timer</span>
                 </Link>
 
                 <Link
                   href={`/maintenance?vehicleId=${v.id}`}
                   title="Jadwal Servis"
-                  className="p-2 rounded-lg text-slate-400 hover:text-slate-200 bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 transition-colors"
+                  className="p-2 rounded-xl text-slate-400 hover:text-amber-400 bg-slate-800/60 hover:bg-slate-800 border border-white/[0.06] transition-colors"
                 >
-                  <MaintenanceIcon className="w-3.5 h-3.5 text-amber-400" />
+                  <Wrench className="w-3.5 h-3.5" />
                 </Link>
 
                 <Link
                   href={`/fuel?vehicleId=${v.id}`}
                   title="Catat BBM"
-                  className="p-2 rounded-lg text-slate-400 hover:text-slate-200 bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 transition-colors"
+                  className="p-2 rounded-xl text-slate-400 hover:text-cyan-400 bg-slate-800/60 hover:bg-slate-800 border border-white/[0.06] transition-colors"
                 >
-                  <FuelIcon className="w-3.5 h-3.5 text-blue-400" />
+                  <Fuel className="w-3.5 h-3.5" />
                 </Link>
 
                 <button
                   onClick={() => onEdit?.(v)}
                   title="Edit Data Kendaraan"
-                  className="p-2 rounded-lg text-slate-400 hover:text-white bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 transition-colors"
+                  className="p-2 rounded-xl text-slate-400 hover:text-white bg-slate-800/60 hover:bg-slate-800 border border-white/[0.06] transition-colors"
                 >
-                  <EditIcon className="w-3.5 h-3.5" />
+                  <Pencil className="w-3.5 h-3.5" />
                 </button>
 
                 <button
@@ -233,9 +230,9 @@ export default function VehicleList({ vehicles, onDelete, onEdit }: Props) {
                     }
                   }}
                   title="Hapus Kendaraan"
-                  className="p-2 rounded-lg text-rose-400 hover:text-rose-300 hover:bg-rose-950/60 border border-rose-900/40 transition-colors"
+                  className="p-2 rounded-xl text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 border border-rose-500/20 transition-colors"
                 >
-                  <TrashIcon className="w-3.5 h-3.5" />
+                  <Trash2 className="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>
@@ -245,82 +242,83 @@ export default function VehicleList({ vehicles, onDelete, onEdit }: Props) {
 
       {/* Technical Detail Specs Modal */}
       {selectedDetail && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="bg-slate-900 border border-slate-700 rounded-2xl max-w-xl w-full p-6 space-y-5 shadow-2xl">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+          <div className="glass-panel border border-white/[0.1] rounded-3xl max-w-xl w-full p-6 md:p-7 space-y-6 shadow-2xl">
+            <div className="flex items-center justify-between pb-4 border-b border-white/[0.08]">
               <div>
-                <span className="text-[10px] font-mono text-cyan-400 uppercase tracking-wider block">
-                  DETAIL SPESIFIKASI TEKNIS
+                <span className="text-xs text-cyan-400 font-medium block">
+                  Detail Spesifikasi Teknis
                 </span>
-                <h3 className="text-lg font-bold font-mono text-white">
+                <h3 className="text-xl font-bold text-white tracking-tight">
                   {selectedDetail.brand} {selectedDetail.model}
                 </h3>
               </div>
               <button
                 onClick={() => setSelectedDetail(null)}
-                className="text-xs font-mono px-3 py-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white"
+                className="p-2 rounded-xl bg-slate-800 text-slate-400 hover:text-white transition-colors"
               >
-                TUTUP
+                <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 text-xs font-mono">
-              <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
-                <span className="text-slate-500 block text-[10px]">JENIS KENDARAAN</span>
-                <span className="text-slate-200 font-semibold">{VEHICLE_TYPE_LABELS[selectedDetail.type]}</span>
+            <div className="grid grid-cols-2 gap-3 text-xs">
+              <div className="bg-[#070b12]/60 p-3.5 rounded-xl border border-white/[0.05]">
+                <span className="text-slate-400 block text-[10px] font-medium">JENIS KENDARAAN</span>
+                <span className="text-slate-100 font-semibold text-sm">{VEHICLE_TYPE_LABELS[selectedDetail.type]}</span>
               </div>
-              <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
-                <span className="text-slate-500 block text-[10px]">NOMOR POLISI (PLAT)</span>
-                <span className="text-slate-200 font-semibold">{selectedDetail.plateNumber || "-"}</span>
+              <div className="bg-[#070b12]/60 p-3.5 rounded-xl border border-white/[0.05]">
+                <span className="text-slate-400 block text-[10px] font-medium">NOMOR POLISI (PLAT)</span>
+                <span className="text-slate-100 font-semibold text-sm">{selectedDetail.plateNumber || "-"}</span>
               </div>
-              <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
-                <span className="text-slate-500 block text-[10px]">NOMOR MESIN</span>
-                <span className="text-slate-200 font-semibold">{selectedDetail.engineNumber || "-"}</span>
+              <div className="bg-[#070b12]/60 p-3.5 rounded-xl border border-white/[0.05]">
+                <span className="text-slate-400 block text-[10px] font-medium">NOMOR MESIN</span>
+                <span className="text-slate-100 font-mono font-medium">{selectedDetail.engineNumber || "-"}</span>
               </div>
-              <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
-                <span className="text-slate-500 block text-[10px]">NOMOR RANGKA (VIN)</span>
-                <span className="text-slate-200 font-semibold">{selectedDetail.chassisNumber || "-"}</span>
+              <div className="bg-[#070b12]/60 p-3.5 rounded-xl border border-white/[0.05]">
+                <span className="text-slate-400 block text-[10px] font-medium">NOMOR RANGKA (VIN)</span>
+                <span className="text-slate-100 font-mono font-medium">{selectedDetail.chassisNumber || "-"}</span>
               </div>
-              <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
-                <span className="text-slate-500 block text-[10px]">KAPASITAS MESIN / CC</span>
-                <span className="text-slate-200 font-semibold">{selectedDetail.engineCc ? `${selectedDetail.engineCc} cc` : "-"}</span>
+              <div className="bg-[#070b12]/60 p-3.5 rounded-xl border border-white/[0.05]">
+                <span className="text-slate-400 block text-[10px] font-medium">KAPASITAS MESIN / CC</span>
+                <span className="text-slate-100 font-semibold">{selectedDetail.engineCc ? `${selectedDetail.engineCc} cc` : "-"}</span>
               </div>
-              <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
-                <span className="text-slate-500 block text-[10px]">JENIS BAHAN BAKAR</span>
-                <span className="text-slate-200 font-semibold">{FUEL_TYPE_LABELS[selectedDetail.fuelType]}</span>
+              <div className="bg-[#070b12]/60 p-3.5 rounded-xl border border-white/[0.05]">
+                <span className="text-slate-400 block text-[10px] font-medium">JENIS BAHAN BAKAR</span>
+                <span className="text-slate-100 font-semibold">{FUEL_TYPE_LABELS[selectedDetail.fuelType]}</span>
               </div>
-              <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
-                <span className="text-slate-500 block text-[10px]">ODOMETER SAAT INI</span>
-                <span className="text-cyan-400 font-semibold">{selectedDetail.currentKm !== undefined ? `${selectedDetail.currentKm.toLocaleString("id-ID")} KM` : "-"}</span>
+              <div className="bg-[#070b12]/60 p-3.5 rounded-xl border border-white/[0.05]">
+                <span className="text-slate-400 block text-[10px] font-medium">ODOMETER SAAT INI</span>
+                <span className="text-cyan-400 font-mono font-semibold">{selectedDetail.currentKm !== undefined ? `${selectedDetail.currentKm.toLocaleString("id-ID")} KM` : "-"}</span>
               </div>
-              <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
-                <span className="text-slate-500 block text-[10px]">KAPASITAS TANGKI BBM</span>
-                <span className="text-slate-200 font-semibold">{selectedDetail.fuelLiters ? `${selectedDetail.fuelLiters} Liter` : "-"}</span>
+              <div className="bg-[#070b12]/60 p-3.5 rounded-xl border border-white/[0.05]">
+                <span className="text-slate-400 block text-[10px] font-medium">KAPASITAS TANGKI BBM</span>
+                <span className="text-slate-100 font-semibold">{selectedDetail.fuelLiters ? `${selectedDetail.fuelLiters} Liter` : "-"}</span>
               </div>
-              <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
-                <span className="text-slate-500 block text-[10px]">KONDISI / BEBAN</span>
-                <span className="text-slate-200 font-semibold">{selectedDetail.loadCondition ? LOAD_CONDITION_LABELS[selectedDetail.loadCondition] : "-"}</span>
+              <div className="bg-[#070b12]/60 p-3.5 rounded-xl border border-white/[0.05]">
+                <span className="text-slate-400 block text-[10px] font-medium">KONDISI / BEBAN</span>
+                <span className="text-slate-100 font-medium">{selectedDetail.loadCondition ? LOAD_CONDITION_LABELS[selectedDetail.loadCondition] : "-"}</span>
               </div>
-              <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
-                <span className="text-slate-500 block text-[10px]">KONDISI MEDAN</span>
-                <span className="text-slate-200 font-semibold">{selectedDetail.terrain ? TERRAIN_LABELS[selectedDetail.terrain] : "-"}</span>
+              <div className="bg-[#070b12]/60 p-3.5 rounded-xl border border-white/[0.05]">
+                <span className="text-slate-400 block text-[10px] font-medium">KONDISI MEDAN</span>
+                <span className="text-slate-100 font-medium">{selectedDetail.terrain ? TERRAIN_LABELS[selectedDetail.terrain] : "-"}</span>
               </div>
-              <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
-                <span className="text-slate-500 block text-[10px]">TERAKHIR GANTI OLI</span>
-                <span className="text-slate-200 font-semibold">{selectedDetail.lastOilChangeDate || "-"}</span>
+              <div className="bg-[#070b12]/60 p-3.5 rounded-xl border border-white/[0.05]">
+                <span className="text-slate-400 block text-[10px] font-medium">TERAKHIR GANTI OLI</span>
+                <span className="text-slate-100 font-medium">{selectedDetail.lastOilChangeDate || "-"}</span>
               </div>
-              <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
-                <span className="text-slate-500 block text-[10px]">KM GANTI OLI</span>
-                <span className="text-slate-200 font-semibold">{selectedDetail.lastOilChangeKm ? `${selectedDetail.lastOilChangeKm.toLocaleString("id-ID")} KM` : "-"}</span>
+              <div className="bg-[#070b12]/60 p-3.5 rounded-xl border border-white/[0.05]">
+                <span className="text-slate-400 block text-[10px] font-medium">KM GANTI OLI</span>
+                <span className="text-slate-100 font-mono font-medium">{selectedDetail.lastOilChangeKm ? `${selectedDetail.lastOilChangeKm.toLocaleString("id-ID")} KM` : "-"}</span>
               </div>
             </div>
 
-            <div className="flex justify-end gap-2 pt-2 border-t border-slate-800">
+            <div className="flex justify-end gap-2 pt-3 border-t border-white/[0.08]">
               <Link
                 href={`/reports?vehicleId=${selectedDetail.id}`}
-                className="px-4 py-2 rounded-lg text-xs font-mono font-semibold text-white bg-blue-600 hover:bg-blue-500"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-semibold text-white bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 shadow-md shadow-cyan-950/40 transition-all"
               >
-                Unduh PDF Unit Ini
+                <FileText className="w-4 h-4" />
+                <span>Unduh Dokumen PDF Unit Ini</span>
               </Link>
             </div>
           </div>
@@ -329,3 +327,4 @@ export default function VehicleList({ vehicles, onDelete, onEdit }: Props) {
     </div>
   );
 }
+

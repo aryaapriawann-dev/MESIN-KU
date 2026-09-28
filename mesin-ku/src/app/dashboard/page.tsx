@@ -2,27 +2,30 @@
 
 import { useEffect, useState, useMemo, useCallback } from "react";
 import Link from "next/link";
+import {
+  Truck,
+  Timer,
+  Wrench,
+  AlertTriangle,
+  Plus,
+  ArrowRight,
+  Clock,
+  Activity,
+  ArrowUpRight,
+  Radio,
+  Gauge,
+  Sparkles,
+} from "lucide-react";
 import { Vehicle, OperationSession, STATUS_LABELS, VEHICLE_TYPE_LABELS } from "@/types";
 import { vehicleStore, sessionStore, maintenanceStore, rulesStore, resetToDemoData } from "@/data/store";
 import { evaluateMaintenanceRules, MaintenanceStatus } from "@/lib/rules";
 import { msToTimeString, calculateRemainingMs, calculateOvertimeMs } from "@/lib/calculator";
 import { useIsMounted } from "@/lib/hooks";
-import {
-  VehicleIcon,
-  OperationIcon,
-  MaintenanceIcon,
-  AlertTriangleIcon,
-  PlusIcon,
-  ArrowRightIcon,
-  CheckCircleIcon,
-  ClockIcon,
-} from "@/components/ui/Icons";
 
 export default function DashboardPage() {
   const mounted = useIsMounted();
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [sessions, setSessions] = useState<OperationSession[]>([]);
-  const [now, setNow] = useState(Date.now());
 
   const refreshData = useCallback(() => {
     setVehicles(vehicleStore.getAll());
@@ -33,9 +36,8 @@ export default function DashboardPage() {
     if (!mounted) return;
     refreshData();
 
-    // 1-second interval for real-time telemetry timer
+    // Real-time telemetry tick
     const interval = setInterval(() => {
-      setNow(Date.now());
       setSessions(sessionStore.getAll());
     }, 1000);
 
@@ -64,7 +66,7 @@ export default function DashboardPage() {
       <div className="flex items-center justify-center min-h-[50vh]">
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 border-2 border-cyan-500/30 border-t-cyan-400 rounded-full animate-spin" />
-          <span className="text-xs font-mono text-slate-400">Sinkronisasi Telemetri...</span>
+          <span className="text-xs text-slate-400 font-medium">Sinkronisasi Telemetri Armada...</span>
         </div>
       </div>
     );
@@ -81,27 +83,35 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-800/60">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/[0.07]">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight text-white font-mono">
-              KONSOL DASHBOARD
+          <div className="flex items-center gap-2.5">
+            <h1 className="text-2xl font-bold tracking-tight text-white">
+              Dashboard Operasional
             </h1>
-            <span className="px-2 py-0.5 rounded text-[10px] font-mono font-semibold bg-cyan-950 text-cyan-400 border border-cyan-800/60">
-              LIVE
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-soft-pulse" />
+              Live Telemetry
             </span>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
-            Ringkasan status operasional armada, timer telemetri, dan jadwal perawatan berkala.
+          <p className="text-sm text-slate-400 mt-1">
+            Status pengoperasian armada, countdown timer real-time, dan pengingat servis berkala.
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
+          <Link
+            href="/operation"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-medium text-slate-200 bg-slate-900/80 hover:bg-slate-800 border border-white/[0.08] hover:border-white/[0.15] transition-all shadow-sm"
+          >
+            <Timer className="w-3.5 h-3.5 text-cyan-400" />
+            <span>Konsol Timer</span>
+          </Link>
           <Link
             href="/vehicles?action=add"
-            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-medium text-white bg-blue-600 hover:bg-blue-500 transition-all shadow-md shadow-blue-900/30"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-medium text-white bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 transition-all shadow-md shadow-cyan-950/40"
           >
-            <PlusIcon className="w-3.5 h-3.5" />
+            <Plus className="w-3.5 h-3.5" />
             <span>Tambah Kendaraan</span>
           </Link>
         </div>
@@ -110,36 +120,36 @@ export default function DashboardPage() {
       {/* Primary KPI Metrics */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <MetricCard
-          title="TOTAL ARMADA"
+          title="Total Armada"
           value={vehicles.length}
-          subtitle="Kendaraan terdaftar"
-          icon={VehicleIcon}
+          subtitle="Unit kendaraan aktif"
+          icon={Truck}
           accent="cyan"
           href="/vehicles"
         />
         <MetricCard
-          title="OPERASI AKTIF"
+          title="Operasi Aktif"
           value={activeSessions.length}
-          subtitle="Mesin menyala sekarang"
-          icon={OperationIcon}
+          subtitle="Mesin menyala saat ini"
+          icon={Activity}
           accent="emerald"
           isLive={activeSessions.length > 0}
           href="/operation"
         />
         <MetricCard
-          title="OVERTIME"
+          title="Unit Overtime"
           value={overtimeSessions.length}
           subtitle="Melebihi target operasi"
-          icon={AlertTriangleIcon}
+          icon={AlertTriangle}
           accent="rose"
           isUrgent={overtimeSessions.length > 0}
           href="/operation"
         />
         <MetricCard
-          title="MAINTENANCE DUE"
+          title="Jatuh Tempo Servis"
           value={maintenanceDue.length}
-          subtitle="Jatuh tempo servis"
-          icon={MaintenanceIcon}
+          subtitle="Tugas perawatan berkala"
+          icon={Wrench}
           accent="amber"
           isUrgent={maintenanceDue.length > 0}
           href="/maintenance"
@@ -148,49 +158,56 @@ export default function DashboardPage() {
 
       {/* Critical Overtime Notification Banner */}
       {overtimeSessions.length > 0 && (
-        <section className="bg-gradient-to-r from-rose-950/80 via-slate-900 to-rose-950/60 border-2 border-rose-500/50 rounded-xl p-5 shadow-lg shadow-rose-950/40">
-          <div className="flex items-center justify-between mb-4">
+        <section className="bg-gradient-to-br from-rose-950/70 via-slate-900/90 to-rose-950/40 border border-rose-500/40 rounded-2xl p-5 md:p-6 shadow-xl shadow-rose-950/30 backdrop-blur-xl">
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
             <div className="flex items-center gap-2.5">
-              <span className="w-3 h-3 rounded-full bg-rose-500 animate-warning-radar" />
-              <h2 className="text-sm font-mono font-bold tracking-wider text-rose-300 uppercase">
-                PERINGATAN OVERTIME ({overtimeSessions.length} UNIT)
-              </h2>
+              <div className="w-8 h-8 rounded-lg bg-rose-500/20 border border-rose-500/40 flex items-center justify-center text-rose-400">
+                <AlertTriangle className="w-4 h-4 animate-bounce" />
+              </div>
+              <div>
+                <h2 className="text-sm font-semibold text-rose-200">
+                  Peringatan Overtime ({overtimeSessions.length} Unit Melebihi Batas)
+                </h2>
+                <p className="text-xs text-rose-300/80">
+                  Mesin telah melampaui target durasi kerja yang ditentukan. Segera alihkan ke waktu istirahat.
+                </p>
+              </div>
             </div>
-            <span className="text-[11px] font-mono text-rose-400 bg-rose-900/40 px-2 py-0.5 rounded border border-rose-700/50">
-              Tindakan Diperlukan Segera
+            <span className="text-xs px-2.5 py-1 rounded-full font-medium bg-rose-500/10 text-rose-300 border border-rose-500/20">
+              Perlu Tindakan
             </span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
             {overtimeSessions.map((s) => {
               const vehicle = vehicles.find((v) => v.id === s.vehicleId);
               const overtime = calculateOvertimeMs(s.targetEndTime);
               return (
                 <div
                   key={s.id}
-                  className="bg-slate-900/90 border border-rose-800/80 rounded-lg p-4 flex items-center justify-between"
+                  className="bg-slate-950/60 border border-rose-500/30 rounded-xl p-4 flex items-center justify-between gap-3 backdrop-blur-sm"
                 >
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
                       {vehicle?.plateNumber && (
-                        <span className="plate-embossed">{vehicle.plateNumber}</span>
+                        <span className="plate-embossed text-xs">{vehicle.plateNumber}</span>
                       )}
                       <span className="font-semibold text-white text-sm">
                         {vehicle ? `${vehicle.brand} ${vehicle.model}` : "Kendaraan"}
                       </span>
                     </div>
                     <div className="flex items-center gap-1.5 text-xs text-rose-400">
-                      <ClockIcon className="w-3.5 h-3.5" />
-                      <span>Melebihi target:</span>
+                      <Clock className="w-3.5 h-3.5" />
+                      <span>Overtime:</span>
                       <span className="font-mono font-bold">+{msToTimeString(overtime)}</span>
                     </div>
                   </div>
                   <Link
                     href={`/operation?vehicleId=${s.vehicleId}`}
-                    className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-rose-600 hover:bg-rose-500 text-white transition-colors flex items-center gap-1"
+                    className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-rose-600 hover:bg-rose-500 text-white transition-all shadow-md shadow-rose-950/40 flex items-center gap-1.5 shrink-0"
                   >
                     <span>Tangani</span>
-                    <ArrowRightIcon className="w-3 h-3" />
+                    <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
                 </div>
               );
@@ -201,20 +218,20 @@ export default function DashboardPage() {
 
       {/* Active Live Operations Monitor */}
       {activeSessions.length > 0 && (
-        <section className="space-y-3">
+        <section className="space-y-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-radar" />
-              <h2 className="text-sm font-mono font-bold tracking-wider text-slate-200 uppercase">
-                MONITOR OPERASI AKTIF
+            <div className="flex items-center gap-2.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-soft-pulse" />
+              <h2 className="text-base font-semibold text-white">
+                Monitor Operasi Aktif ({activeSessions.length})
               </h2>
             </div>
             <Link
               href="/operation"
-              className="text-xs font-mono text-cyan-400 hover:text-cyan-300 flex items-center gap-1"
+              className="text-xs font-medium text-cyan-400 hover:text-cyan-300 flex items-center gap-1 group"
             >
               <span>Buka Konsol Timer</span>
-              <ArrowRightIcon className="w-3 h-3" />
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
             </Link>
           </div>
 
@@ -227,43 +244,43 @@ export default function DashboardPage() {
               return (
                 <div
                   key={s.id}
-                  className={`bg-slate-900/90 rounded-xl p-5 border transition-all ${
+                  className={`glass-card rounded-2xl p-5 md:p-6 relative overflow-hidden transition-all ${
                     isWarning
-                      ? "border-amber-500/70 shadow-lg shadow-amber-950/20"
-                      : "border-slate-800 hover:border-slate-700 shadow-md"
+                      ? "border-amber-500/50 shadow-lg shadow-amber-950/20"
+                      : "hover:border-white/[0.15]"
                   }`}
                 >
-                  <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-start justify-between gap-3 mb-4">
                     <div>
-                      <div className="flex items-center gap-2 mb-1">
+                      <div className="flex items-center gap-2 mb-1.5">
                         {vehicle?.plateNumber && (
-                          <span className="plate-embossed">{vehicle.plateNumber}</span>
+                          <span className="plate-embossed text-xs">{vehicle.plateNumber}</span>
                         )}
                         <h3 className="font-semibold text-white text-base">
                           {vehicle ? `${vehicle.brand} ${vehicle.model}` : "Kendaraan"}
                         </h3>
                       </div>
-                      <p className="text-xs text-slate-400 font-mono">
-                        {vehicle ? VEHICLE_TYPE_LABELS[vehicle.type] : "-"}
+                      <p className="text-xs text-slate-400">
+                        {vehicle ? VEHICLE_TYPE_LABELS[vehicle.type] : "-"} • {vehicle?.fuelType.toUpperCase()}
                       </p>
                     </div>
 
                     <span
-                      className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${
+                      className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full uppercase tracking-wide ${
                         isWarning
-                          ? "bg-amber-950 text-amber-300 border border-amber-500/40 animate-pulse"
-                          : "bg-emerald-950 text-emerald-300 border border-emerald-500/40"
+                          ? "bg-amber-500/20 text-amber-300 border border-amber-500/30 animate-pulse"
+                          : "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
                       }`}
                     >
                       {STATUS_LABELS[s.status]}
                     </span>
                   </div>
 
-                  {/* Countdown readout */}
-                  <div className="bg-slate-950/80 border border-slate-800/80 rounded-lg p-3 my-3">
-                    <div className="text-[10px] font-mono text-slate-400 mb-1 flex items-center justify-between">
-                      <span>SISA WAKTU OPERASI</span>
-                      <span className="text-slate-500">
+                  {/* Countdown readout instrument */}
+                  <div className="bg-[#070b12]/80 border border-white/[0.06] rounded-xl p-4 my-4">
+                    <div className="text-[11px] text-slate-400 mb-1.5 flex items-center justify-between">
+                      <span className="font-medium">SISA WAKTU OPERASI</span>
+                      <span className="text-slate-400 font-mono text-xs">
                         Target:{" "}
                         {new Date(s.targetEndTime).toLocaleTimeString("id-ID", {
                           hour: "2-digit",
@@ -272,7 +289,7 @@ export default function DashboardPage() {
                       </span>
                     </div>
                     <div
-                      className={`text-3xl sm:text-4xl font-mono font-bold tracking-wider tabular-nums ${
+                      className={`text-3xl sm:text-4xl font-mono font-bold tracking-tight tabular-nums ${
                         isWarning ? "text-amber-400" : "text-emerald-400"
                       }`}
                     >
@@ -280,8 +297,8 @@ export default function DashboardPage() {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between text-xs pt-1">
-                    <span className="text-slate-500 font-mono text-[11px]">
+                  <div className="flex items-center justify-between text-xs pt-2 border-t border-white/[0.05]">
+                    <span className="text-slate-400">
                       Mulai:{" "}
                       {new Date(s.startTime).toLocaleTimeString("id-ID", {
                         hour: "2-digit",
@@ -290,10 +307,10 @@ export default function DashboardPage() {
                     </span>
                     <Link
                       href={`/operation?vehicleId=${s.vehicleId}`}
-                      className="text-cyan-400 hover:text-cyan-300 font-medium inline-flex items-center gap-1"
+                      className="text-cyan-400 hover:text-cyan-300 font-medium inline-flex items-center gap-1 group"
                     >
                       <span>Kontrol Operasi</span>
-                      <ArrowRightIcon className="w-3 h-3" />
+                      <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
                     </Link>
                   </div>
                 </div>
@@ -307,9 +324,9 @@ export default function DashboardPage() {
       {restingSessions.length > 0 && (
         <section className="space-y-3">
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-cyan-400" />
-            <h2 className="text-sm font-mono font-bold tracking-wider text-slate-300 uppercase">
-              SEDANG MASA ISTIRAHAT MESIN
+            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-soft-pulse" />
+            <h2 className="text-sm font-semibold text-slate-200">
+              Masa Istirahat Mesin ({restingSessions.length} Unit)
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -318,26 +335,26 @@ export default function DashboardPage() {
               return (
                 <div
                   key={s.id}
-                  className="bg-slate-900/80 border border-cyan-800/40 rounded-lg p-3.5 flex items-center justify-between"
+                  className="bg-slate-900/60 border border-cyan-500/20 rounded-xl p-3.5 flex items-center justify-between backdrop-blur-sm"
                 >
                   <div className="flex items-center gap-2.5">
                     {vehicle?.plateNumber && (
-                      <span className="plate-embossed text-[10px]">{vehicle.plateNumber}</span>
+                      <span className="plate-embossed text-xs">{vehicle.plateNumber}</span>
                     )}
                     <div>
                       <h4 className="text-sm font-medium text-slate-200">
                         {vehicle ? `${vehicle.brand} ${vehicle.model}` : "Kendaraan"}
                       </h4>
-                      <p className="text-xs text-cyan-400 font-mono">
+                      <p className="text-xs text-cyan-400">
                         {STATUS_LABELS[s.status]} ({s.restDurationMinutes} menit)
                       </p>
                     </div>
                   </div>
                   <Link
                     href={`/operation?vehicleId=${s.vehicleId}`}
-                    className="text-xs font-mono text-cyan-400 hover:underline"
+                    className="text-xs font-medium text-cyan-400 hover:text-cyan-300 px-3 py-1.5 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 transition-colors"
                   >
-                    Detail
+                    Buka Timer
                   </Link>
                 </div>
               );
@@ -351,29 +368,29 @@ export default function DashboardPage() {
         <section className="space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse" />
-              <h2 className="text-sm font-mono font-bold tracking-wider text-amber-300 uppercase">
-                JATUH TEMPO PERAWATAN ({maintenanceDue.length} TUGAS)
+              <span className="w-2 h-2 rounded-full bg-amber-400 animate-soft-pulse" />
+              <h2 className="text-sm font-semibold text-amber-300">
+                Jatuh Tempo Perawatan ({maintenanceDue.length} Tugas Servis)
               </h2>
             </div>
             <Link
               href="/maintenance"
-              className="text-xs font-mono text-amber-400 hover:text-amber-300 flex items-center gap-1"
+              className="text-xs font-medium text-amber-400 hover:text-amber-300 flex items-center gap-1 group"
             >
               <span>Lihat Jadwal Lengkap</span>
-              <ArrowRightIcon className="w-3 h-3" />
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
             </Link>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             {maintenanceDue.map((m) => (
               <div
                 key={m.ruleId}
-                className="bg-slate-900/90 border border-amber-600/40 rounded-lg px-4 py-3 flex items-center justify-between"
+                className="bg-slate-900/70 border border-amber-500/30 rounded-xl px-4 py-3 flex items-center justify-between gap-3 backdrop-blur-sm"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-amber-950 border border-amber-700/50 flex items-center justify-center shrink-0">
-                    <MaintenanceIcon className="w-4 h-4 text-amber-400" />
+                  <div className="w-8 h-8 rounded-lg bg-amber-500/15 border border-amber-500/30 flex items-center justify-center shrink-0">
+                    <Wrench className="w-4 h-4 text-amber-400" />
                   </div>
                   <div>
                     <p className="text-sm font-medium text-slate-200">{m.description}</p>
@@ -382,7 +399,7 @@ export default function DashboardPage() {
                 </div>
                 <Link
                   href="/maintenance"
-                  className="px-3 py-1.5 rounded-md text-xs font-mono font-medium bg-amber-500/10 text-amber-300 hover:bg-amber-500/20 border border-amber-500/30 transition-colors"
+                  className="px-3.5 py-1.5 rounded-lg text-xs font-medium bg-amber-500/15 text-amber-300 hover:bg-amber-500/25 border border-amber-500/30 transition-colors shrink-0"
                 >
                   Servis Sekarang
                 </Link>
@@ -396,24 +413,24 @@ export default function DashboardPage() {
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-sm font-mono font-bold tracking-wider text-slate-200 uppercase">
-              RINGKASAN STATUS ARMADA
+            <h2 className="text-base font-semibold text-white">
+              Status Armada Terdaftar
             </h2>
-            <p className="text-xs text-slate-400">Daftar kendaraan dan pembacaan odometer saat ini.</p>
+            <p className="text-xs text-slate-400">Ringkasan unit dan pembacaan odometer terkini.</p>
           </div>
           <Link
             href="/vehicles"
-            className="text-xs font-mono text-cyan-400 hover:text-cyan-300 flex items-center gap-1"
+            className="text-xs font-medium text-cyan-400 hover:text-cyan-300 flex items-center gap-1 group"
           >
             <span>Semua Kendaraan ({vehicles.length})</span>
-            <ArrowRightIcon className="w-3 h-3" />
+            <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
           </Link>
         </div>
 
         {vehicles.length === 0 ? (
-          <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-8 text-center space-y-4">
-            <div className="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center mx-auto text-slate-400">
-              <VehicleIcon className="w-6 h-6" />
+          <div className="glass-panel rounded-2xl p-10 text-center space-y-4">
+            <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center mx-auto text-cyan-400">
+              <Truck className="w-6 h-6" />
             </div>
             <div>
               <h3 className="text-base font-semibold text-white">Belum Ada Kendaraan Terdaftar</h3>
@@ -424,15 +441,15 @@ export default function DashboardPage() {
             <div className="flex items-center justify-center gap-3">
               <Link
                 href="/vehicles?action=add"
-                className="px-4 py-2 rounded-lg text-xs font-medium text-white bg-blue-600 hover:bg-blue-500 transition-colors"
+                className="px-4 py-2 rounded-xl text-xs font-medium text-white bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 transition-all shadow-md shadow-cyan-950/40"
               >
                 + Tambah Kendaraan Pertama
               </Link>
               <button
                 onClick={() => resetToDemoData()}
-                className="px-4 py-2 rounded-lg text-xs font-medium text-slate-300 bg-slate-800 hover:bg-slate-700 border border-slate-700 transition-colors"
+                className="px-4 py-2 rounded-xl text-xs font-medium text-slate-300 bg-slate-800/80 hover:bg-slate-700/80 border border-white/[0.08] transition-colors"
               >
-                Muat Contoh Armada Demo
+                Muat Data Contoh Demo
               </button>
             </div>
           </div>
@@ -443,56 +460,56 @@ export default function DashboardPage() {
               return (
                 <div
                   key={v.id}
-                  className="bg-slate-900/90 border border-slate-800/90 hover:border-slate-700 rounded-xl p-4 transition-all duration-150 flex flex-col justify-between"
+                  className="glass-card rounded-2xl p-4 md:p-5 flex flex-col justify-between group"
                 >
                   <div>
-                    <div className="flex items-start justify-between gap-2 mb-2">
+                    <div className="flex items-start justify-between gap-2 mb-3">
                       <div>
-                        <h3 className="font-semibold text-white text-sm">
+                        <h3 className="font-semibold text-white text-sm group-hover:text-cyan-300 transition-colors">
                           {v.brand} {v.model}
                         </h3>
-                        <span className="text-[11px] text-slate-400 font-mono">
+                        <span className="text-[11px] text-slate-400">
                           {VEHICLE_TYPE_LABELS[v.type]}
                         </span>
                       </div>
                       {v.plateNumber && (
-                        <span className="plate-embossed text-[10px]">{v.plateNumber}</span>
+                        <span className="plate-embossed text-xs">{v.plateNumber}</span>
                       )}
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2 my-3 text-xs bg-slate-950/60 p-2.5 rounded-lg border border-slate-800/60 font-mono">
+                    <div className="grid grid-cols-2 gap-2 my-3 text-xs bg-[#070b12]/60 p-3 rounded-xl border border-white/[0.05]">
                       <div>
-                        <span className="text-[10px] text-slate-500 block">ODOMETER</span>
-                        <span className="text-slate-300 font-medium tabular-nums">
+                        <span className="text-[10px] text-slate-400 block font-medium">ODOMETER</span>
+                        <span className="text-slate-200 font-mono font-semibold tabular-nums text-sm">
                           {v.currentKm !== undefined
                             ? `${v.currentKm.toLocaleString("id-ID")} KM`
                             : "-"}
                         </span>
                       </div>
                       <div>
-                        <span className="text-[10px] text-slate-500 block">STATUS</span>
+                        <span className="text-[10px] text-slate-400 block font-medium">STATUS</span>
                         {isRunning ? (
-                          <span className="text-emerald-400 font-semibold inline-flex items-center gap-1">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-radar" />
+                          <span className="text-emerald-400 font-semibold inline-flex items-center gap-1.5 text-xs">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-soft-pulse" />
                             Operasi
                           </span>
                         ) : (
-                          <span className="text-slate-400">Siap</span>
+                          <span className="text-slate-400 text-xs">Siap Jalan</span>
                         )}
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 pt-2 border-t border-slate-800/60">
+                  <div className="flex items-center gap-2 pt-3 border-t border-white/[0.06]">
                     <Link
                       href={`/operation?vehicleId=${v.id}`}
-                      className="flex-1 text-center py-1.5 rounded-lg text-xs font-medium bg-cyan-950 hover:bg-cyan-900/80 text-cyan-300 border border-cyan-800/50 transition-colors"
+                      className="flex-1 text-center py-2 rounded-xl text-xs font-medium bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/20 transition-colors"
                     >
                       Buka Timer
                     </Link>
                     <Link
                       href={`/vehicles?action=edit&id=${v.id}`}
-                      className="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-white bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 transition-colors"
+                      className="px-3.5 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-white bg-slate-800/60 hover:bg-slate-700/60 border border-white/[0.06] transition-colors"
                     >
                       Edit
                     </Link>
@@ -529,30 +546,33 @@ function MetricCard({
   href,
 }: MetricCardProps) {
   const accentStyles = {
-    cyan: "text-cyan-400 bg-cyan-950/50 border-cyan-800/40",
-    emerald: "text-emerald-400 bg-emerald-950/50 border-emerald-500/40",
-    amber: "text-amber-400 bg-amber-950/50 border-amber-600/40",
-    rose: "text-rose-400 bg-rose-950/50 border-rose-600/40",
-  };
+    cyan: {
+      badge: "text-cyan-400 bg-cyan-500/10 border-cyan-500/20",
+      glow: "hover:border-cyan-500/30",
+    },
+    emerald: {
+      badge: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
+      glow: "hover:border-emerald-500/30",
+    },
+    amber: {
+      badge: "text-amber-400 bg-amber-500/10 border-amber-500/20",
+      glow: "hover:border-amber-500/30",
+    },
+    rose: {
+      badge: "text-rose-400 bg-rose-500/10 border-rose-500/20",
+      glow: "hover:border-rose-500/30",
+    },
+  }[accent];
 
   const content = (
-    <div className="bg-slate-900/90 border border-slate-800 hover:border-slate-700 rounded-xl p-4 transition-all duration-150 group relative overflow-hidden">
-      {isLive && (
-        <div className="absolute top-2 right-2 flex items-center gap-1">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-radar" />
-        </div>
-      )}
-      {isUrgent && (
-        <div className="absolute top-2 right-2 flex items-center gap-1">
-          <span className="w-2 h-2 rounded-full bg-rose-500 animate-warning-radar" />
-        </div>
-      )}
-
+    <div
+      className={`glass-card rounded-2xl p-4 md:p-5 group relative overflow-hidden ${accentStyles.glow}`}
+    >
       <div className="flex items-center justify-between mb-3">
-        <span className="text-[11px] font-mono tracking-wider text-slate-400 uppercase font-semibold">
+        <span className="text-xs text-slate-400 font-medium">
           {title}
         </span>
-        <div className={`p-2 rounded-lg border ${accentStyles[accent]}`}>
+        <div className={`p-2 rounded-xl border ${accentStyles.badge}`}>
           <Icon className="w-4 h-4" />
         </div>
       </div>
@@ -561,9 +581,24 @@ function MetricCard({
         {value}
       </div>
 
-      <p className="text-xs text-slate-400 mt-1 font-mono">{subtitle}</p>
+      <div className="flex items-center justify-between mt-1.5">
+        <p className="text-xs text-slate-400">{subtitle}</p>
+        {isLive && (
+          <span className="flex items-center gap-1 text-[11px] font-medium text-emerald-400">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-soft-pulse" />
+            Live
+          </span>
+        )}
+        {isUrgent && (
+          <span className="flex items-center gap-1 text-[11px] font-medium text-rose-400">
+            <span className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-soft-pulse" />
+            Perhatian
+          </span>
+        )}
+      </div>
     </div>
   );
 
   return href ? <Link href={href}>{content}</Link> : content;
 }
+

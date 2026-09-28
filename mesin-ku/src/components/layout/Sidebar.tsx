@@ -4,15 +4,18 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
-  DashboardIcon,
-  VehicleIcon,
-  OperationIcon,
-  MaintenanceIcon,
-  FuelIcon,
-  HistoryIcon,
-  ReportIcon,
-  EngineIcon,
-} from "@/components/ui/Icons";
+  LayoutDashboard,
+  Truck,
+  Timer,
+  Wrench,
+  Fuel,
+  History,
+  FileText,
+  RotateCcw,
+  Activity,
+  ChevronRight,
+  ShieldCheck,
+} from "lucide-react";
 import { vehicleStore, sessionStore, resetToDemoData } from "@/data/store";
 
 interface NavItem {
@@ -23,13 +26,13 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { href: "/dashboard", label: "Dashboard Telemetri", icon: DashboardIcon },
-  { href: "/vehicles", label: "Armada Kendaraan", icon: VehicleIcon, badgeKey: "totalVehicles" },
-  { href: "/operation", label: "Timer Operasional", icon: OperationIcon, badgeKey: "activeOps" },
-  { href: "/maintenance", label: "Perawatan & Servis", icon: MaintenanceIcon },
-  { href: "/fuel", label: "Konsumsi BBM", icon: FuelIcon },
-  { href: "/history", label: "Riwayat Operasi", icon: HistoryIcon },
-  { href: "/reports", label: "Ekspor Dokumen PDF", icon: ReportIcon },
+  { href: "/dashboard", label: "Dashboard Telemetri", icon: LayoutDashboard },
+  { href: "/vehicles", label: "Armada Kendaraan", icon: Truck, badgeKey: "totalVehicles" },
+  { href: "/operation", label: "Timer Operasional", icon: Timer, badgeKey: "activeOps" },
+  { href: "/maintenance", label: "Perawatan & Servis", icon: Wrench },
+  { href: "/fuel", label: "Konsumsi BBM", icon: Fuel },
+  { href: "/history", label: "Riwayat Operasi", icon: History },
+  { href: "/reports", label: "Ekspor Dokumen PDF", icon: FileText },
 ];
 
 export default function Sidebar() {
@@ -51,35 +54,35 @@ export default function Sidebar() {
   }, []);
 
   return (
-    <aside className="w-68 bg-slate-950 border-r border-slate-800/80 text-slate-300 min-h-screen flex flex-col shrink-0 max-md:hidden select-none">
+    <aside className="w-68 bg-[#090d16]/95 border-r border-white/[0.07] backdrop-blur-xl text-slate-300 min-h-screen flex flex-col shrink-0 max-md:hidden select-none sticky top-0 h-screen z-20">
       {/* Brand & Logo */}
-      <div className="p-5 border-b border-slate-800/80">
+      <div className="p-5 border-b border-white/[0.07]">
         <Link href="/dashboard" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-cyan-500 p-0.5 shadow-lg shadow-blue-500/20 group-hover:scale-105 transition-transform duration-200">
-            <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
-              <EngineIcon className="w-5 h-5 text-cyan-400" />
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 p-[1px] shadow-lg shadow-cyan-500/20 group-hover:shadow-cyan-500/30 transition-all duration-300">
+            <div className="w-full h-full bg-[#0b101b] rounded-[11px] flex items-center justify-center">
+              <Activity className="w-5 h-5 text-cyan-400 group-hover:scale-110 transition-transform duration-300" />
             </div>
           </div>
           <div>
-            <div className="flex items-center gap-1.5">
-              <span className="text-base font-extrabold tracking-tight text-white font-mono">
+            <div className="flex items-center gap-2">
+              <span className="text-base font-bold tracking-tight text-white">
                 MESIN<span className="text-cyan-400">-</span>KU
               </span>
-              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-blue-950/80 text-blue-400 border border-blue-800/60 font-semibold">
-                v2.0
+              <span className="text-[10px] px-1.5 py-0.5 rounded font-medium bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">
+                PRO
               </span>
             </div>
-            <p className="text-[11px] text-slate-400 font-mono tracking-wider">
-              FLEET TELEMETRICS
+            <p className="text-[11px] text-slate-400 font-medium">
+              Fleet Operations OS
             </p>
           </div>
         </Link>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-3 space-y-1">
-        <div className="px-3 pt-2 pb-1.5 text-[10px] font-mono tracking-wider font-semibold text-slate-500 uppercase">
-          Menu Kontrol
+      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+        <div className="px-3 pb-2 text-[11px] font-semibold text-slate-400 tracking-wider uppercase">
+          Menu Operasional
         </div>
         {navItems.map((item) => {
           const isActive = pathname.startsWith(item.href);
@@ -95,10 +98,10 @@ export default function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-all duration-150 group ${
+              className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm transition-all duration-200 group relative ${
                 isActive
-                  ? "bg-slate-800/90 text-white font-medium border border-slate-700/80 shadow-inner shadow-black/20"
-                  : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/80"
+                  ? "bg-cyan-500/10 text-cyan-300 font-medium border border-cyan-500/20 shadow-sm shadow-cyan-950/20"
+                  : "text-slate-400 hover:text-slate-100 hover:bg-white/[0.04] border border-transparent"
               }`}
             >
               <div className="flex items-center gap-3">
@@ -106,22 +109,26 @@ export default function Sidebar() {
                   className={`w-4 h-4 transition-colors ${
                     isActive
                       ? "text-cyan-400"
-                      : "text-slate-500 group-hover:text-slate-300"
+                      : "text-slate-400 group-hover:text-slate-200"
                   }`}
                 />
-                <span className="tracking-tight">{item.label}</span>
+                <span className="tracking-tight text-[13px]">{item.label}</span>
               </div>
 
-              {badgeValue > 0 && (
+              {badgeValue > 0 ? (
                 <span
-                  className={`text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full ${
+                  className={`text-[11px] font-mono font-semibold px-2 py-0.5 rounded-md ${
                     item.badgeKey === "activeOps"
-                      ? "bg-emerald-950 text-emerald-400 border border-emerald-500/30 animate-pulse"
-                      : "bg-slate-800 text-slate-400 border border-slate-700"
+                      ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 animate-soft-pulse"
+                      : "bg-slate-800 text-slate-400 border border-slate-700/60"
                   }`}
                 >
                   {badgeValue}
                 </span>
+              ) : (
+                isActive && (
+                  <ChevronRight className="w-3.5 h-3.5 text-cyan-400/70" />
+                )
               )}
             </Link>
           );
@@ -129,31 +136,35 @@ export default function Sidebar() {
       </nav>
 
       {/* Footer Info & Demo Loader */}
-      <div className="p-4 border-t border-slate-800/80 space-y-3 bg-slate-950/60">
-        <div className="bg-slate-900/80 border border-slate-800 rounded-lg p-3">
-          <div className="flex items-center justify-between text-xs text-slate-400 font-mono mb-1">
-            <span>STATUS TELEMETRI</span>
-            <span className="text-emerald-400">ONLINE</span>
+      <div className="p-4 border-t border-white/[0.07] space-y-3 bg-[#080c14]/80">
+        <div className="bg-slate-900/60 border border-white/[0.06] rounded-xl p-3 backdrop-blur-md">
+          <div className="flex items-center justify-between text-xs text-slate-300 font-medium mb-1.5">
+            <span className="flex items-center gap-1.5">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+              Engine Sync
+            </span>
+            <span className="text-[11px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">
+              ONLINE
+            </span>
           </div>
-          <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
-            <div className="bg-emerald-500 h-full rounded-full w-full" />
-          </div>
-          <p className="text-[11px] text-slate-500 mt-2 font-mono">
-            Penyimpanan: Local Engine
+          <p className="text-[11px] text-slate-400">
+            Penyimpanan lokal telemetri aktif & tersinkronisasi.
           </p>
         </div>
 
         <button
           onClick={() => {
-            if (confirm("Muat ulang data contoh armada dan operasional?")) {
+            if (confirm("Muat ulang data contoh armada dan jadwal operasional?")) {
               resetToDemoData();
             }
           }}
-          className="w-full text-center text-xs text-slate-500 hover:text-slate-300 py-1.5 transition-colors font-mono"
+          className="w-full flex items-center justify-center gap-1.5 text-center text-xs text-slate-400 hover:text-slate-200 py-2 rounded-lg hover:bg-white/[0.04] transition-colors"
         >
-          Muat Ulang Demo Armada
+          <RotateCcw className="w-3 h-3" />
+          <span>Reset Data Demo</span>
         </button>
       </div>
     </aside>
   );
 }
+

@@ -12,7 +12,21 @@ import {
 import { vehicleStore, fuelStore } from "@/data/store";
 import { validateFuelRecord, ValidationError } from "@/lib/validation";
 import { useIsMounted } from "@/lib/hooks";
-import { FuelIcon, PlusIcon, TrashIcon } from "@/components/ui/Icons";
+import {
+  Fuel,
+  Plus,
+  Trash2,
+  Calendar,
+  Gauge,
+  Wallet,
+  TrendingUp,
+  Droplet,
+  Car,
+  FileText,
+  AlertCircle,
+  X,
+  CheckCircle2,
+} from "lucide-react";
 
 export default function FuelPage() {
   const mounted = useIsMounted();
@@ -135,58 +149,70 @@ export default function FuelPage() {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 border-2 border-cyan-500/30 border-t-cyan-400 rounded-full animate-spin" />
-          <span className="text-xs font-mono text-slate-400">Sinkronisasi Log BBM...</span>
+          <div className="w-9 h-9 border-2 border-cyan-500/20 border-t-cyan-400 rounded-full animate-spin" />
+          <span className="text-xs font-mono tracking-wider text-slate-400">Sinkronisasi Log BBM...</span>
         </div>
       </div>
     );
   }
 
   const inputClass = (field: string) =>
-    `w-full px-3.5 py-2.5 bg-slate-950 border rounded-lg text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-cyan-500 font-mono ${
+    `w-full px-3.5 py-2.5 bg-slate-950/80 border rounded-xl text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all ${
       errors.some((e) => e.field === field)
-        ? "border-rose-500 focus:border-rose-500"
-        : "border-slate-800 focus:border-cyan-500"
+        ? "border-rose-500/80 bg-rose-950/20 focus:border-rose-500"
+        : "border-slate-800/80 hover:border-slate-700 focus:border-cyan-500"
     }`;
 
   return (
     <div className="space-y-6 max-w-5xl">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-800/60">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight text-white font-mono">
-              MANAJEMEN KONSUMSI BBM
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800/70">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+              <Fuel className="w-4 h-4" />
+            </div>
+            <h1 className="text-2xl font-bold tracking-tight text-white">
+              Manajemen Bahan Bakar
             </h1>
-            <span className="px-2 py-0.5 rounded text-[10px] font-mono font-semibold bg-cyan-950 text-cyan-400 border border-cyan-800/60">
-              LOG BAHAN BAKAR
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-cyan-950/80 text-cyan-400 border border-cyan-800/60">
+              TELEMETRY LOG
             </span>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
-            Pencatatan pengisian bahan bakar armada, volume liter, biaya operasional, dan tracking odometer.
+          <p className="text-xs text-slate-400">
+            Pencatatan pengisian BBM armada, volume konsumsi, efisiensi biaya energi, dan pemutakhiran odometer.
           </p>
         </div>
 
         {selectedVehicle && (
           <button
             onClick={() => setShowForm(true)}
-            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-500 transition-all font-mono"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold text-white bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 transition-all shadow-lg shadow-cyan-950/50"
           >
-            <PlusIcon className="w-3.5 h-3.5" />
-            <span>CATAT PENGISIAN BBM</span>
+            <Plus className="w-4 h-4" />
+            <span>Catat Pengisian BBM</span>
           </button>
         )}
       </div>
 
-      {/* Vehicle Selection Dropdown */}
-      <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-4">
-        <label className="block text-xs font-mono font-medium text-slate-300 mb-2">
-          PILIH KENDARAAN ARMADA
-        </label>
+      {/* Vehicle Selection Card */}
+      <div className="glass-panel p-4.5 rounded-2xl relative overflow-hidden">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2.5">
+          <label className="text-xs font-semibold text-slate-300 flex items-center gap-2">
+            <Car className="w-4 h-4 text-cyan-400" />
+            Pilih Unit Armada
+          </label>
+          {selectedVehicle?.plateNumber && (
+            <span className="plate-embossed text-[11px] self-start sm:self-auto">
+              {selectedVehicle.plateNumber}
+            </span>
+          )}
+        </div>
+
         <select
           value={selectedVehicleId}
           onChange={(e) => setSelectedVehicleId(e.target.value)}
-          className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-lg text-sm text-slate-100 focus:outline-none focus:ring-1 focus:ring-cyan-500 font-mono"
+          className="w-full px-3.5 py-2.5 bg-slate-950/80 border border-slate-800/80 rounded-xl text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all"
         >
           <option value="">-- Pilih Kendaraan --</option>
           {vehicles.map((v) => (
@@ -199,65 +225,92 @@ export default function FuelPage() {
 
       {selectedVehicle && (
         <>
-          {/* KPI Summary Cards */}
+          {/* KPI Telemetry Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-4">
-              <span className="text-[10px] font-mono text-slate-400 block uppercase">
-                TOTAL VOLUME BBM
-              </span>
-              <div className="text-2xl font-mono font-bold text-cyan-400 mt-1">
-                {totalLiters.toFixed(1)} Liter
+            <div className="glass-card p-5 rounded-2xl relative overflow-hidden border-t-2 border-t-cyan-500">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-medium text-slate-400">Total Volume BBM</span>
+                <div className="w-7 h-7 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+                  <Droplet className="w-3.5 h-3.5" />
+                </div>
               </div>
-              <p className="text-[11px] font-mono text-slate-500 mt-0.5">
-                {records.length} transaksi pengisian
+              <div className="text-2xl font-bold font-mono text-cyan-400 mt-2">
+                {totalLiters.toFixed(1)} <span className="text-sm font-normal text-slate-400">Liter</span>
+              </div>
+              <p className="text-[11px] text-slate-500 mt-1 flex items-center gap-1">
+                <span>{records.length} transaksi pengisian</span>
               </p>
             </div>
 
-            <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-4">
-              <span className="text-[10px] font-mono text-slate-400 block uppercase">
-                TOTAL BIAYA BBM
-              </span>
-              <div className="text-2xl font-mono font-bold text-emerald-400 mt-1">
+            <div className="glass-card p-5 rounded-2xl relative overflow-hidden border-t-2 border-t-emerald-500">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-medium text-slate-400">Total Biaya BBM</span>
+                <div className="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                  <Wallet className="w-3.5 h-3.5" />
+                </div>
+              </div>
+              <div className="text-2xl font-bold font-mono text-emerald-400 mt-2">
                 Rp {totalCost.toLocaleString("id-ID")}
               </div>
-              <p className="text-[11px] font-mono text-slate-500 mt-0.5">
-                Pengeluaran energi operasional
+              <p className="text-[11px] text-slate-500 mt-1">
+                Akumulasi belanja bahan bakar
               </p>
             </div>
 
-            <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-4">
-              <span className="text-[10px] font-mono text-slate-400 block uppercase">
-                RATA-RATA HARGA / LITER
-              </span>
-              <div className="text-2xl font-mono font-bold text-slate-200 mt-1">
+            <div className="glass-card p-5 rounded-2xl relative overflow-hidden border-t-2 border-t-blue-500">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-medium text-slate-400">Rata-rata Harga / Liter</span>
+                <div className="w-7 h-7 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
+                  <TrendingUp className="w-3.5 h-3.5" />
+                </div>
+              </div>
+              <div className="text-2xl font-bold font-mono text-slate-200 mt-2">
                 Rp {avgPrice.toLocaleString("id-ID")}
               </div>
-              <p className="text-[11px] font-mono text-slate-500 mt-0.5">
+              <p className="text-[11px] text-slate-500 mt-1">
                 Estimasi rata-rata per liter
               </p>
             </div>
           </div>
 
-          {/* Form Modal: Catat Pengisian Baru */}
+          {/* New Fuel Record Modal / Form */}
           {showForm && (
-            <div className="bg-slate-900/95 border border-slate-700 rounded-2xl p-5 md:p-6 shadow-2xl space-y-4">
+            <div className="glass-panel p-5 md:p-6 rounded-2xl border border-cyan-500/30 shadow-2xl space-y-4">
               <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-                <h3 className="text-sm font-mono font-bold text-white tracking-wide">
-                  CATAT PENGISIAN BAHAN BAKAR BARU
-                </h3>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-cyan-400 animate-soft-pulse" />
+                  <h3 className="text-sm font-semibold text-white tracking-wide">
+                    Catat Pengisian Bahan Bakar Baru
+                  </h3>
+                </div>
                 <button
                   onClick={resetForm}
-                  className="text-xs font-mono text-slate-400 hover:text-white px-2 py-1 rounded bg-slate-800"
+                  className="text-slate-400 hover:text-white p-1 rounded-lg bg-slate-800/80 hover:bg-slate-700 transition-colors"
                 >
-                  TUTUP
+                  <X className="w-4 h-4" />
                 </button>
               </div>
+
+              {errors.length > 0 && (
+                <div className="p-3 rounded-xl bg-rose-950/40 border border-rose-500/50 flex items-start gap-2.5 text-xs text-rose-300">
+                  <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-semibold block mb-0.5">Mohon periksa data input:</span>
+                    <ul className="list-disc list-inside space-y-0.5 text-[11px]">
+                      {errors.map((err, idx) => (
+                        <li key={idx}>{err.message}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              )}
 
               <form onSubmit={handleAdd} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-xs font-mono font-medium text-slate-300 mb-1.5">
-                      TANGGAL PENGISIAN *
+                    <label className="block text-xs font-medium text-slate-300 mb-1.5 flex items-center gap-1.5">
+                      <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                      Tanggal Pengisian *
                     </label>
                     <input
                       type="date"
@@ -269,8 +322,9 @@ export default function FuelPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-mono font-medium text-slate-300 mb-1.5">
-                      JENIS BAHAN BAKAR *
+                    <label className="block text-xs font-medium text-slate-300 mb-1.5 flex items-center gap-1.5">
+                      <Fuel className="w-3.5 h-3.5 text-slate-400" />
+                      Jenis Bahan Bakar *
                     </label>
                     <select
                       value={fuelType}
@@ -284,8 +338,9 @@ export default function FuelPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-mono font-medium text-slate-300 mb-1.5">
-                      JUMLAH LITER *
+                    <label className="block text-xs font-medium text-slate-300 mb-1.5 flex items-center gap-1.5">
+                      <Droplet className="w-3.5 h-3.5 text-slate-400" />
+                      Volume Liter *
                     </label>
                     <input
                       type="number"
@@ -300,8 +355,9 @@ export default function FuelPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-mono font-medium text-slate-300 mb-1.5">
-                      HARGA PER LITER (RP)
+                    <label className="block text-xs font-medium text-slate-300 mb-1.5 flex items-center gap-1.5">
+                      <Wallet className="w-3.5 h-3.5 text-slate-400" />
+                      Harga per Liter (Rp)
                     </label>
                     <input
                       type="number"
@@ -314,8 +370,9 @@ export default function FuelPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-mono font-medium text-slate-300 mb-1.5">
-                      KILOMETER SAAT PENGISIAN (KM)
+                    <label className="block text-xs font-medium text-slate-300 mb-1.5 flex items-center gap-1.5">
+                      <Gauge className="w-3.5 h-3.5 text-slate-400" />
+                      Kilometer Odometer (KM)
                     </label>
                     <input
                       type="number"
@@ -328,66 +385,74 @@ export default function FuelPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-mono font-medium text-slate-300 mb-1.5">
-                      CATATAN / SPBU
+                    <label className="block text-xs font-medium text-slate-300 mb-1.5 flex items-center gap-1.5">
+                      <FileText className="w-3.5 h-3.5 text-slate-400" />
+                      Catatan / Lokasi SPBU
                     </label>
                     <input
                       type="text"
                       value={fuelNotes}
                       onChange={(e) => setFuelNotes(e.target.value)}
-                      placeholder="Contoh: SPBU KM 57 Tol Trans Jawa"
+                      placeholder="Contoh: SPBU Pertamina KM 57"
                       className={inputClass("notes")}
                     />
                   </div>
                 </div>
 
                 {fuelLiters && fuelPricePerLiter && (
-                  <div className="bg-slate-950 p-3 rounded-lg border border-slate-800 text-xs font-mono text-cyan-300">
-                    Total Kalkulasi: <span className="font-bold text-white">Rp {(Number(fuelLiters) * Number(fuelPricePerLiter)).toLocaleString("id-ID")}</span>
+                  <div className="p-3 rounded-xl bg-cyan-950/40 border border-cyan-500/30 flex items-center justify-between text-xs font-mono text-cyan-300">
+                    <span className="text-slate-400">Total Estimasi Biaya:</span>
+                    <span className="font-bold text-sm text-cyan-200">
+                      Rp {(Number(fuelLiters) * Number(fuelPricePerLiter)).toLocaleString("id-ID")}
+                    </span>
                   </div>
                 )}
 
-                <div className="flex justify-end gap-2 pt-2 border-t border-slate-800">
+                <div className="flex justify-end gap-2.5 pt-3 border-t border-slate-800">
                   <button
                     type="button"
                     onClick={resetForm}
-                    className="px-4 py-2 rounded-lg text-xs font-mono text-slate-300 bg-slate-800 hover:bg-slate-700"
+                    className="px-4 py-2 rounded-xl text-xs font-medium text-slate-300 bg-slate-800 hover:bg-slate-700 transition-colors"
                   >
-                    BATAL
+                    Batal
                   </button>
                   <button
                     type="submit"
-                    className="px-5 py-2 rounded-lg text-xs font-mono font-bold text-white bg-blue-600 hover:bg-blue-500"
+                    className="px-5 py-2 rounded-xl text-xs font-semibold text-white bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 transition-all shadow-md shadow-cyan-950/40"
                   >
-                    SIMPAN LOG BBM
+                    Simpan Transaksi BBM
                   </button>
                 </div>
               </form>
             </div>
           )}
 
-          {/* History List */}
+          {/* Records History List */}
           <section className="space-y-3">
-            <h3 className="text-xs font-mono font-bold tracking-wider text-slate-300 uppercase">
-              RIWAYAT PENGISIAN BAHAN BAKAR ({records.length})
-            </h3>
+            <div className="flex items-center justify-between">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+                <Fuel className="w-3.5 h-3.5 text-cyan-400" />
+                Riwayat Pengisian Bahan Bakar ({records.length})
+              </h3>
+            </div>
 
             {records.length > 0 ? (
-              <div className="space-y-2.5">
+              <div className="space-y-3">
                 {records.map((r) => (
                   <div
                     key={r.id}
-                    className="bg-slate-900/90 border border-slate-800/90 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono"
+                    className="glass-card rounded-2xl p-4.5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all hover:border-slate-700/80"
                   >
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="font-bold text-cyan-400 text-sm">
+                    <div className="space-y-2">
+                      <div className="flex flex-wrap items-center gap-2.5">
+                        <span className="font-bold font-mono text-cyan-400 text-base">
                           {r.liters} Liter
                         </span>
-                        <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700 text-[10px]">
+                        <span className="px-2 py-0.5 rounded-md bg-slate-800/80 text-slate-300 border border-slate-700/80 text-[10px] font-mono uppercase">
                           {FUEL_TYPE_LABELS[r.fuelType]}
                         </span>
-                        <span className="text-slate-400">
+                        <span className="text-xs text-slate-400 flex items-center gap-1">
+                          <Calendar className="w-3 h-3 text-slate-500" />
                           {new Date(r.date).toLocaleDateString("id-ID", {
                             day: "numeric",
                             month: "short",
@@ -396,40 +461,48 @@ export default function FuelPage() {
                         </span>
                       </div>
 
-                      <div className="flex flex-wrap items-center gap-3 text-slate-400 text-[11px]">
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-slate-400 text-xs">
                         {r.pricePerLiter !== undefined && (
-                          <span>Rp {r.pricePerLiter.toLocaleString("id-ID")}/L</span>
+                          <span className="font-mono">
+                            Rp {r.pricePerLiter.toLocaleString("id-ID")} / Liter
+                          </span>
                         )}
                         {r.totalPrice !== undefined && (
-                          <span className="text-emerald-400 font-semibold">
+                          <span className="text-emerald-400 font-mono font-semibold">
                             Total: Rp {r.totalPrice.toLocaleString("id-ID")}
                           </span>
                         )}
                         {r.kilometer !== undefined && (
-                          <span>Odometer: {r.kilometer.toLocaleString("id-ID")} KM</span>
+                          <span className="flex items-center gap-1 font-mono text-slate-300">
+                            <Gauge className="w-3 h-3 text-cyan-400" />
+                            {r.kilometer.toLocaleString("id-ID")} KM
+                          </span>
                         )}
                       </div>
 
                       {r.notes && (
-                        <p className="text-slate-400 mt-1 text-[11px]">
-                          Catatan: {r.notes}
+                        <p className="text-slate-300 text-xs bg-slate-950/60 px-3 py-1.5 rounded-lg border border-slate-800/60">
+                          {r.notes}
                         </p>
                       )}
                     </div>
 
                     <button
                       onClick={() => handleDelete(r.id)}
-                      className="self-end sm:self-center text-slate-500 hover:text-rose-400 p-1.5 transition-colors"
+                      className="self-end sm:self-center text-slate-500 hover:text-rose-400 p-2 rounded-lg hover:bg-rose-950/30 transition-colors"
                       title="Hapus riwayat BBM"
                     >
-                      <TrashIcon className="w-4 h-4" />
+                      <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="bg-slate-900/40 border border-slate-800 rounded-xl p-8 text-center text-xs font-mono text-slate-400">
-                Belum ada data pengisian BBM untuk kendaraan ini.
+              <div className="glass-panel p-10 rounded-2xl text-center">
+                <Fuel className="w-8 h-8 text-slate-600 mx-auto mb-2" />
+                <p className="text-xs text-slate-400">
+                  Belum ada data transaksi pengisian BBM untuk kendaraan ini.
+                </p>
               </div>
             )}
           </section>
@@ -438,3 +511,4 @@ export default function FuelPage() {
     </div>
   );
 }
+

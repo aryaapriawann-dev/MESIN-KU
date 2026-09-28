@@ -1,12 +1,23 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import {
+  Clock,
+  AlertTriangle,
+  Volume2,
+  VolumeX,
+  Square,
+  Coffee,
+  CheckCircle2,
+  Radio,
+  Flame,
+  Zap,
+} from "lucide-react";
 import { OperationSession, Vehicle, STATUS_LABELS, VEHICLE_TYPE_LABELS } from "@/types";
 import { TimerState, computeTimerState } from "@/lib/timer";
-import { msToTimeString, msToHumanReadable, calculateRestEnd } from "@/lib/calculator";
+import { msToTimeString, calculateRestEnd } from "@/lib/calculator";
 import { sessionStore } from "@/data/store";
 import { telemetryAudio } from "@/lib/alarm";
-import { ClockIcon, AlertTriangleIcon, CheckCircleIcon } from "@/components/ui/Icons";
 
 interface Props {
   session: OperationSession;
@@ -53,7 +64,7 @@ export default function TimerConsole({ session, vehicle, onUpdate, onComplete }:
 
         const updated: OperationSession = {
           ...current,
-          status: state.status, // REST_REQUIRED or OVERTIME
+          status: state.status,
         };
         sessionStore.update(updated);
         onUpdate(updated);
@@ -147,67 +158,76 @@ export default function TimerConsole({ session, vehicle, onUpdate, onComplete }:
 
   const statusConfig = {
     RUNNING: {
-      badge: "bg-emerald-950/80 text-emerald-400 border-emerald-500/40",
-      accent: "text-emerald-400",
+      badge: "bg-emerald-500/10 text-emerald-300 border-emerald-500/30",
+      accent: "text-emerald-400 drop-shadow-[0_0_25px_rgba(16,185,129,0.35)]",
       border: "border-emerald-500/40",
-      glow: "shadow-emerald-950/30",
-      bar: "bg-emerald-500",
+      glow: "shadow-emerald-950/20",
+      bar: "bg-gradient-to-r from-emerald-500 to-teal-400",
+      dot: "bg-emerald-400",
     },
     WARNING: {
-      badge: "bg-amber-950/80 text-amber-400 border-amber-500/40",
-      accent: "text-amber-400",
-      border: "border-amber-500/60",
-      glow: "shadow-amber-950/40",
-      bar: "bg-amber-500",
+      badge: "bg-amber-500/10 text-amber-300 border-amber-500/30",
+      accent: "text-amber-400 drop-shadow-[0_0_25px_rgba(245,158,11,0.35)]",
+      border: "border-amber-500/50",
+      glow: "shadow-amber-950/20",
+      bar: "bg-gradient-to-r from-amber-500 to-yellow-400",
+      dot: "bg-amber-400",
     },
     REST_REQUIRED: {
-      badge: "bg-orange-950/90 text-orange-300 border-orange-500/60 animate-pulse",
-      accent: "text-orange-400",
-      border: "border-orange-500/70",
-      glow: "shadow-orange-950/50",
-      bar: "bg-orange-500",
+      badge: "bg-orange-500/15 text-orange-300 border-orange-500/40 animate-pulse",
+      accent: "text-orange-400 drop-shadow-[0_0_25px_rgba(249,115,22,0.35)]",
+      border: "border-orange-500/60",
+      glow: "shadow-orange-950/30",
+      bar: "bg-gradient-to-r from-orange-500 to-amber-500",
+      dot: "bg-orange-400",
     },
     OVERTIME: {
-      badge: "bg-rose-950/90 text-rose-300 border-rose-500/60 animate-pulse",
-      accent: "text-rose-400",
-      border: "border-rose-500/70",
-      glow: "shadow-rose-950/50",
-      bar: "bg-rose-500",
+      badge: "bg-rose-500/15 text-rose-300 border-rose-500/40 animate-pulse",
+      accent: "text-rose-400 drop-shadow-[0_0_25px_rgba(244,63,94,0.4)]",
+      border: "border-rose-500/60",
+      glow: "shadow-rose-950/30",
+      bar: "bg-gradient-to-r from-rose-500 to-red-500",
+      dot: "bg-rose-400",
     },
     RESTING: {
-      badge: "bg-cyan-950/80 text-cyan-300 border-cyan-500/40",
-      accent: "text-cyan-400",
-      border: "border-cyan-500/50",
-      glow: "shadow-cyan-950/30",
-      bar: "bg-cyan-500",
+      badge: "bg-cyan-500/10 text-cyan-300 border-cyan-500/30",
+      accent: "text-cyan-400 drop-shadow-[0_0_25px_rgba(6,182,212,0.35)]",
+      border: "border-cyan-500/40",
+      glow: "shadow-cyan-950/20",
+      bar: "bg-gradient-to-r from-cyan-500 to-blue-500",
+      dot: "bg-cyan-400",
     },
     READY: {
-      badge: "bg-teal-950/80 text-teal-300 border-teal-500/40",
-      accent: "text-teal-400",
-      border: "border-teal-500/50",
-      glow: "shadow-teal-950/30",
+      badge: "bg-teal-500/10 text-teal-300 border-teal-500/30",
+      accent: "text-teal-400 drop-shadow-[0_0_25px_rgba(20,184,166,0.35)]",
+      border: "border-teal-500/40",
+      glow: "shadow-teal-950/20",
       bar: "bg-teal-500",
+      dot: "bg-teal-400",
     },
     COMPLETED: {
       badge: "bg-slate-800 text-slate-300 border-slate-700",
       accent: "text-slate-400",
       border: "border-slate-800",
-      glow: "shadow-black/30",
+      glow: "shadow-black/20",
       bar: "bg-slate-600",
+      dot: "bg-slate-500",
     },
     MAINTENANCE: {
-      badge: "bg-purple-950 text-purple-300 border-purple-600",
+      badge: "bg-purple-500/10 text-purple-300 border-purple-500/30",
       accent: "text-purple-400",
-      border: "border-purple-600",
-      glow: "shadow-purple-950/30",
+      border: "border-purple-600/40",
+      glow: "shadow-purple-950/20",
       bar: "bg-purple-600",
+      dot: "bg-purple-400",
     },
   }[timerState.status] || {
     badge: "bg-slate-800 text-slate-300 border-slate-700",
     accent: "text-slate-400",
     border: "border-slate-800",
-    glow: "shadow-black/30",
+    glow: "shadow-black/20",
     bar: "bg-slate-600",
+    dot: "bg-slate-500",
   };
 
   const expectedReadyIso = calculateRestEnd(
@@ -217,90 +237,101 @@ export default function TimerConsole({ session, vehicle, onUpdate, onComplete }:
 
   return (
     <div
-      className={`bg-slate-900/95 border-2 ${statusConfig.border} rounded-2xl p-6 md:p-8 shadow-2xl ${statusConfig.glow} space-y-6 transition-all duration-200`}
+      className={`glass-panel border ${statusConfig.border} rounded-3xl p-6 md:p-8 shadow-2xl ${statusConfig.glow} space-y-6 transition-all duration-300`}
     >
       {/* Alarm Banner */}
       {alarmActive && (
-        <div className="bg-gradient-to-r from-rose-900 via-red-900 to-rose-950 border border-rose-500 text-white px-5 py-3.5 rounded-xl flex flex-wrap items-center justify-between gap-3 animate-pulse shadow-lg shadow-rose-950">
+        <div className="bg-gradient-to-r from-rose-900/90 via-red-900/80 to-rose-950/90 border border-rose-500/80 text-white px-5 py-4 rounded-2xl flex flex-wrap items-center justify-between gap-3 shadow-xl shadow-rose-950/50 backdrop-blur-xl">
           <div className="flex items-center gap-3">
             <span className="w-3.5 h-3.5 rounded-full bg-rose-400 animate-ping shrink-0" />
             <div>
-              <p className="font-mono font-bold text-sm tracking-wider">
-                PERINGATAN ALARM OPERASIONAL!
+              <p className="font-semibold text-sm tracking-wide text-white">
+                Peringatan Batas Waktu Operasi Tercapai
               </p>
-              <p className="text-xs text-rose-200">
-                Target waktu operasional telah tercapai. Hentikan mesin atau alihkan ke periode istirahat.
+              <p className="text-xs text-rose-200 mt-0.5">
+                Target waktu operasional telah usai. Hentikan mesin armada atau alihkan ke periode istirahat.
               </p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={handleStopAlarm}
-              className="px-3.5 py-1.5 rounded-lg text-xs font-mono font-bold bg-white text-rose-900 hover:bg-rose-100 transition-colors shadow"
+              className="px-4 py-2 rounded-xl text-xs font-semibold bg-white text-rose-900 hover:bg-rose-100 transition-colors shadow-md"
             >
-              HENTIKAN ALARM
+              Hentikan Alarm
             </button>
             <button
               onClick={handleToggleMute}
-              className="px-2.5 py-1.5 rounded-lg text-xs font-mono text-rose-200 bg-rose-950 hover:bg-rose-800 border border-rose-700 transition-colors"
+              className="px-3 py-2 rounded-xl text-xs font-medium text-rose-200 bg-rose-950/80 hover:bg-rose-800 border border-rose-700/60 transition-colors"
             >
-              {isMuted ? "UNMUTE" : "MUTE"}
+              {isMuted ? "Unmute" : "Mute"}
             </button>
           </div>
         </div>
       )}
 
       {/* Header Info */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-white/[0.07]">
         <div>
-          <div className="flex items-center gap-2 mb-1">
+          <div className="flex items-center gap-2.5 mb-1.5">
             {vehicle?.plateNumber && (
               <span className="plate-embossed text-xs">{vehicle.plateNumber}</span>
             )}
-            <h2 className="text-lg md:text-xl font-bold font-mono text-white">
+            <h2 className="text-xl md:text-2xl font-bold text-white tracking-tight">
               {vehicle ? `${vehicle.brand} ${vehicle.model}` : "Konsol Timer Operasional"}
             </h2>
           </div>
-          <p className="text-xs text-slate-400 font-mono">
-            {vehicle ? `${VEHICLE_TYPE_LABELS[vehicle.type]} • CC: ${vehicle.engineCc || "-"} • BBM: ${vehicle.fuelType}` : "Sesi Telemetri Berjalan"}
+          <p className="text-xs text-slate-400">
+            {vehicle ? `${VEHICLE_TYPE_LABELS[vehicle.type]} • Mesin: ${vehicle.engineCc || "-"} CC • BBM: ${vehicle.fuelType.toUpperCase()}` : "Sesi Telemetri Berjalan"}
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           <span
-            className={`px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider border ${statusConfig.badge}`}
+            className={`px-3 py-1 rounded-full text-xs font-semibold tracking-wide border flex items-center gap-1.5 ${statusConfig.badge}`}
           >
+            <span className={`w-1.5 h-1.5 rounded-full ${statusConfig.dot} animate-soft-pulse`} />
             {STATUS_LABELS[timerState.status]}
           </span>
           <button
             onClick={handleToggleMute}
-            className="text-xs font-mono px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-400 border border-slate-700 transition-colors"
-            title="Toggle Mute Audio"
+            className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-xl bg-slate-900/60 hover:bg-slate-800 text-slate-300 border border-white/[0.08] transition-colors"
+            title="Toggle Audio"
           >
-            {isMuted ? "Audio: MUTED" : "Audio: ON"}
+            {isMuted ? (
+              <>
+                <VolumeX className="w-3.5 h-3.5 text-slate-400" />
+                <span>Muted</span>
+              </>
+            ) : (
+              <>
+                <Volume2 className="w-3.5 h-3.5 text-cyan-400" />
+                <span>Audio On</span>
+              </>
+            )}
           </button>
         </div>
       </div>
 
-      {/* Big Telemetry Display */}
-      <div className="bg-slate-950/90 border border-slate-800/90 rounded-2xl p-6 md:p-8 text-center space-y-2 relative overflow-hidden">
-        <div className="text-xs font-mono tracking-widest text-slate-400 uppercase">
+      {/* Big Cockpit Telemetry Display */}
+      <div className="bg-[#070b12]/80 border border-white/[0.07] rounded-3xl p-6 md:p-10 text-center space-y-3 relative overflow-hidden">
+        <div className="text-xs font-semibold tracking-widest text-slate-400 uppercase">
           {timerState.status === "RUNNING" || timerState.status === "WARNING"
-            ? "SISA WAKTU OPERASI HINGGA TARGET"
+            ? "Sisa Waktu Operasional Mesin"
             : timerState.status === "OVERTIME"
-            ? "KETERLAMBATAN OPERASI (OVERTIME)"
+            ? "Keterlambatan Operasi (Overtime)"
             : timerState.status === "REST_REQUIRED"
-            ? "TARGET TERCAPAI — SEGERA ISTIRAHATKAN MESIN"
+            ? "Target Selesai — Segera Istirahatkan Mesin"
             : timerState.status === "RESTING"
-            ? "COUNTDOWN MASA ISTIRAHAT MESIN"
+            ? "Masa Istirahat & Pendinginan Mesin"
             : timerState.status === "READY"
-            ? "MESIN TELAH BERISTIRAHAT PENUH — SIAP BEROPERASI"
-            : "SESI TELAH SELESAI"}
+            ? "Mesin Siap Beroperasi Kembali"
+            : "Sesi Selesai"}
         </div>
 
         {/* Readout Numbers */}
         <div
-          className={`text-5xl sm:text-7xl md:text-8xl font-mono font-extrabold tracking-tight tabular-nums ${statusConfig.accent}`}
+          className={`text-6xl sm:text-7xl md:text-8xl font-mono font-extrabold tracking-tight tabular-nums transition-all ${statusConfig.accent}`}
         >
           {timerState.status === "RUNNING" || timerState.status === "WARNING" ? (
             msToTimeString(timerState.remainingMs)
@@ -319,8 +350,8 @@ export default function TimerConsole({ session, vehicle, onUpdate, onComplete }:
 
         {/* Dynamic Context Under Counter */}
         {timerState.status === "RESTING" && (
-          <p className="text-xs font-mono text-cyan-300">
-            Estimasi Waktu Siap Kembali:{" "}
+          <p className="text-xs text-cyan-300 font-mono">
+            Estimasi Mesin Siap Jalan:{" "}
             <span className="font-bold">
               {new Date(expectedReadyIso).toLocaleTimeString("id-ID", {
                 hour: "2-digit",
@@ -332,8 +363,8 @@ export default function TimerConsole({ session, vehicle, onUpdate, onComplete }:
         )}
 
         {timerState.status === "OVERTIME" && (
-          <p className="text-xs font-mono text-rose-400">
-            Telah melewati target berhenti sejak{" "}
+          <p className="text-xs text-rose-400 font-mono">
+            Melewati target sejak{" "}
             {new Date(session.targetEndTime).toLocaleTimeString("id-ID", {
               hour: "2-digit",
               minute: "2-digit",
@@ -343,12 +374,12 @@ export default function TimerConsole({ session, vehicle, onUpdate, onComplete }:
       </div>
 
       {/* Progress Bar */}
-      <div className="space-y-1.5">
-        <div className="flex justify-between text-xs font-mono text-slate-400">
-          <span>PROGRESS {timerState.status === "RESTING" ? "ISTIRAHAT" : "OPERASI"}</span>
-          <span>{Math.round(timerState.progress)}%</span>
+      <div className="space-y-2">
+        <div className="flex justify-between text-xs text-slate-400 font-medium">
+          <span>Progress {timerState.status === "RESTING" ? "Istirahat" : "Operasi"}</span>
+          <span className="font-mono">{Math.round(timerState.progress)}%</span>
         </div>
-        <div className="w-full bg-slate-950 rounded-full h-3 p-0.5 border border-slate-800">
+        <div className="w-full bg-[#070b12] rounded-full h-2.5 p-0.5 border border-white/[0.06] overflow-hidden">
           <div
             className={`h-full rounded-full transition-all duration-300 ${statusConfig.bar}`}
             style={{ width: `${Math.min(100, Math.max(0, timerState.progress))}%` }}
@@ -357,10 +388,10 @@ export default function TimerConsole({ session, vehicle, onUpdate, onComplete }:
       </div>
 
       {/* Telemetry Parameters Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 bg-slate-950/60 p-4 rounded-xl border border-slate-800/80 font-mono text-xs">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 bg-[#070b12]/50 p-4 rounded-2xl border border-white/[0.05]">
         <div>
-          <span className="text-slate-500 block text-[10px]">WAKTU MULAI</span>
-          <span className="text-slate-200 font-semibold">
+          <span className="text-slate-400 block text-[11px] font-medium">Waktu Mulai</span>
+          <span className="text-slate-100 font-mono font-semibold text-sm">
             {new Date(session.startTime).toLocaleTimeString("id-ID", {
               hour: "2-digit",
               minute: "2-digit",
@@ -369,8 +400,8 @@ export default function TimerConsole({ session, vehicle, onUpdate, onComplete }:
         </div>
 
         <div>
-          <span className="text-slate-500 block text-[10px]">TARGET BERHENTI</span>
-          <span className="text-slate-200 font-semibold">
+          <span className="text-slate-400 block text-[11px] font-medium">Target Berhenti</span>
+          <span className="text-slate-100 font-mono font-semibold text-sm">
             {new Date(session.targetEndTime).toLocaleTimeString("id-ID", {
               hour: "2-digit",
               minute: "2-digit",
@@ -379,15 +410,15 @@ export default function TimerConsole({ session, vehicle, onUpdate, onComplete }:
         </div>
 
         <div>
-          <span className="text-slate-500 block text-[10px]">DURASI ISTIRAHAT</span>
-          <span className="text-slate-200 font-semibold">
+          <span className="text-slate-400 block text-[11px] font-medium">Target Istirahat</span>
+          <span className="text-slate-100 font-mono font-semibold text-sm">
             {session.restDurationMinutes} Menit
           </span>
         </div>
 
         <div>
-          <span className="text-slate-500 block text-[10px]">WAKTU SIAP KEMBALI</span>
-          <span className="text-cyan-400 font-semibold">
+          <span className="text-slate-400 block text-[11px] font-medium">Waktu Siap Kembali</span>
+          <span className="text-cyan-400 font-mono font-semibold text-sm">
             {new Date(expectedReadyIso).toLocaleTimeString("id-ID", {
               hour: "2-digit",
               minute: "2-digit",
@@ -398,8 +429,8 @@ export default function TimerConsole({ session, vehicle, onUpdate, onComplete }:
 
       {/* Additional Session Notes */}
       {session.notes && (
-        <div className="text-xs text-slate-400 bg-slate-950/40 px-3.5 py-2.5 rounded-lg border border-slate-800/60">
-          <span className="font-mono text-slate-500 mr-2">CATATAN:</span>
+        <div className="text-xs text-slate-300 bg-[#070b12]/40 px-4 py-3 rounded-xl border border-white/[0.05]">
+          <span className="text-slate-400 font-medium mr-2">Catatan Operasi:</span>
           {session.notes}
         </div>
       )}
@@ -409,9 +440,10 @@ export default function TimerConsole({ session, vehicle, onUpdate, onComplete }:
         {(timerState.status === "RUNNING" || timerState.status === "WARNING") && (
           <button
             onClick={handleStopOperation}
-            className="flex-1 min-w-[140px] px-5 py-3 rounded-xl font-mono text-xs font-bold text-white bg-rose-600 hover:bg-rose-500 transition-colors shadow-lg shadow-rose-950/40"
+            className="flex-1 min-w-[160px] flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-xs font-semibold text-white bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 transition-all shadow-lg shadow-rose-950/40"
           >
-            HENTIKAN OPERASI (STOP)
+            <Square className="w-4 h-4 fill-white" />
+            <span>Hentikan Operasi (Stop)</span>
           </button>
         )}
 
@@ -420,16 +452,17 @@ export default function TimerConsole({ session, vehicle, onUpdate, onComplete }:
             {session.restDurationMinutes > 0 && (
               <button
                 onClick={handleStartRest}
-                className="flex-1 min-w-[160px] px-5 py-3 rounded-xl font-mono text-xs font-bold text-white bg-cyan-600 hover:bg-cyan-500 transition-colors shadow-lg shadow-cyan-950/40"
+                className="flex-1 min-w-[180px] flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-xs font-semibold text-white bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 transition-all shadow-lg shadow-cyan-950/40"
               >
-                MULAI ISTIRAHAT MESIN ({session.restDurationMinutes} MIN)
+                <Coffee className="w-4 h-4" />
+                <span>Mulai Istirahat Mesin ({session.restDurationMinutes} Menit)</span>
               </button>
             )}
             <button
               onClick={handleFinishSession}
-              className="px-5 py-3 rounded-xl font-mono text-xs font-bold text-slate-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 transition-colors"
+              className="px-5 py-3 rounded-xl text-xs font-semibold text-slate-200 bg-slate-800/80 hover:bg-slate-700/80 border border-white/[0.08] transition-colors"
             >
-              SELESAIKAN SESI
+              Selesaikan Sesi
             </button>
           </>
         )}
@@ -437,21 +470,23 @@ export default function TimerConsole({ session, vehicle, onUpdate, onComplete }:
         {timerState.status === "RESTING" && (
           <button
             onClick={handleFinishSession}
-            className="flex-1 px-5 py-3 rounded-xl font-mono text-xs font-bold text-slate-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 transition-colors"
+            className="flex-1 px-5 py-3 rounded-xl text-xs font-semibold text-slate-200 bg-slate-800/80 hover:bg-slate-700/80 border border-white/[0.08] transition-colors"
           >
-            SELESAIKAN ISTIRAHAT (LEWATI SISA WAKTU)
+            Selesaikan Istirahat (Lewati Sisa Waktu)
           </button>
         )}
 
         {timerState.status === "READY" && (
           <button
             onClick={handleFinishSession}
-            className="flex-1 px-5 py-3 rounded-xl font-mono text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 transition-colors shadow-lg shadow-emerald-950/40"
+            className="flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-xs font-semibold text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 transition-all shadow-lg shadow-emerald-950/40"
           >
-            SIMPAN KE HISTORI & MULAI SESI BARU
+            <CheckCircle2 className="w-4 h-4" />
+            <span>Simpan ke Histori & Mulai Sesi Baru</span>
           </button>
         )}
       </div>
     </div>
   );
 }
+

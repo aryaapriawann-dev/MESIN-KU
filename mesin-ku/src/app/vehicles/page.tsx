@@ -2,12 +2,12 @@
 
 import { Suspense, useState, useCallback, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
+import { Truck, Plus, X } from "lucide-react";
 import { Vehicle } from "@/types";
 import { vehicleStore } from "@/data/store";
 import VehicleForm from "@/components/vehicle/VehicleForm";
 import VehicleList from "@/components/vehicle/VehicleList";
 import { useIsMounted } from "@/lib/hooks";
-import { PlusIcon, VehicleIcon } from "@/components/ui/Icons";
 
 function VehiclesContent() {
   const searchParams = useSearchParams();
@@ -73,7 +73,7 @@ function VehiclesContent() {
       <div className="flex items-center justify-center min-h-[40vh]">
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 border-2 border-cyan-500/30 border-t-cyan-400 rounded-full animate-spin" />
-          <span className="text-xs font-mono text-slate-400">Memuat Basis Data Armada...</span>
+          <span className="text-xs text-slate-400 font-medium">Memuat Basis Data Armada...</span>
         </div>
       </div>
     );
@@ -82,17 +82,17 @@ function VehiclesContent() {
   return (
     <div className="space-y-6">
       {/* Page Title & Action Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-800/60">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/[0.07]">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight text-white font-mono">
-              MANAJEMEN ARMADA
+          <div className="flex items-center gap-2.5">
+            <h1 className="text-2xl font-bold tracking-tight text-white">
+              Manajemen Armada
             </h1>
-            <span className="px-2 py-0.5 rounded text-[10px] font-mono font-semibold bg-slate-800 text-slate-300 border border-slate-700">
-              {vehicles.length} UNIT
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-800 text-slate-300 border border-white/[0.08]">
+              {vehicles.length} Unit
             </span>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-sm text-slate-400 mt-1">
             Katalog spesifikasi kendaraan, nomor rangka/mesin, kapasitas bahan bakar, dan kondisi operasional.
           </p>
         </div>
@@ -100,31 +100,33 @@ function VehiclesContent() {
         {!isFormOpen && (
           <button
             onClick={handleOpenAdd}
-            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-500 transition-all shadow-md shadow-blue-900/30 font-mono tracking-wide"
+            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold text-white bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 transition-all shadow-md shadow-cyan-950/40"
           >
-            <PlusIcon className="w-3.5 h-3.5" />
-            <span>TAMBAH KENDARAAN</span>
+            <Plus className="w-4 h-4" />
+            <span>Tambah Kendaraan</span>
           </button>
         )}
       </div>
 
       {/* Form Modal / Inline Panel */}
       {isFormOpen && (
-        <div className="bg-slate-900/90 border border-slate-700/80 rounded-xl p-5 md:p-6 shadow-xl space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-            <div className="flex items-center gap-2">
-              <VehicleIcon className="w-5 h-5 text-cyan-400" />
-              <h2 className="text-base font-semibold text-white font-mono">
+        <div className="glass-panel rounded-3xl p-6 md:p-8 shadow-2xl space-y-5 relative">
+          <div className="flex items-center justify-between pb-4 border-b border-white/[0.08]">
+            <div className="flex items-center gap-2.5">
+              <div className="p-2 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
+                <Truck className="w-5 h-5" />
+              </div>
+              <h2 className="text-lg font-bold text-white tracking-tight">
                 {editingVehicle
-                  ? `EDIT KENDARAAN: ${editingVehicle.brand} ${editingVehicle.model}`
-                  : "PENDAFTARAN KENDARAAN BARU"}
+                  ? `Edit Kendaraan: ${editingVehicle.brand} ${editingVehicle.model}`
+                  : "Pendaftaran Kendaraan Baru"}
               </h2>
             </div>
             <button
               onClick={handleCloseForm}
-              className="text-xs font-mono text-slate-400 hover:text-white px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 transition-colors"
+              className="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
             >
-              BATAL / TUTUP
+              <X className="w-4 h-4" />
             </button>
           </div>
 
@@ -159,3 +161,4 @@ export default function VehiclesPage() {
     </Suspense>
   );
 }
+
